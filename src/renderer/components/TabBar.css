@@ -1,0 +1,107 @@
+.tab-bar {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  height: 35px;
+  overflow: hidden;
+}
+
+.tab-list {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: 100%;
+  scrollbar-width: thin;
+}
+
+.tab-list::-webkit-scrollbar {
+  height: 4px;
+}
+
+.tab-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tab-list::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  height: 100%;
+  border-right: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s;
+  min-width: 100px;
+  max-width: 200px;
+  position: relative;
+  background-color: var(--bg-secondary);
+}
+
+.tab-item:hover {
+  background-color: var(--bg-elevated);
+}
+
+.tab-item.active {
+  background-color: var(--bg-primary);
+  border-bottom: 2px solid var(--accent-color, #0066cc);
+}
+
+.tab-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.tab-title {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tab-item.active .tab-title {
+  font-weight: 500;
+}
+
+.tab-dirty-indicator {
+  color: var(--accent-color, #0066cc);
+  font-size: 10px;
+  flex-shrink: 0;
+  margin-left: -4px;
+}
+
+.tab-close-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.tab-item:hover .tab-close-btn {
+  display: block;
+}
+
+.tab-close-btn:hover {
+  background-color: var(--surface-highlight);
+  color: var(--text-primary);
+}
+
+/* 空状态 - 当没有标签时隐藏 */
+.tab-bar:empty {
+  display: none;
+}

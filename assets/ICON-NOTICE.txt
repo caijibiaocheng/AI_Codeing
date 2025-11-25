@@ -1,0 +1,16 @@
+
+临时占位符图标已创建！
+
+当前使用的是 SVG 格式的占位符图标。
+
+要正式打包，你需要：
+1. 准备一张 1024x1024 的 PNG 图片
+2. 访问 https://www.icoconverter.com/
+3. 转换为 .ico（Windows）、.icns（macOS）、.png（Linux）
+4. 将文件放入此目录
+
+或者使用命令行工具：
+npm install -g electron-icon-builder
+electron-icon-builder --input=./your-icon.png --output=./assets --flatten
+
+如果你想立即打包测试，请临时注释掉 package.json 中的 icon 配置项。

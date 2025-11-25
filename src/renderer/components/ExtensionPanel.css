@@ -1,0 +1,403 @@
+.extension-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.extension-panel {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 900px;
+  max-width: 90vw;
+  height: 700px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+  animation: slideIn 0.3s ease;
+  overflow: hidden;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.extension-panel-header {
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--bg-primary);
+}
+
+.extension-panel-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.extension-panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-install-vsix {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-install-vsix:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.btn-install-vsix:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-close {
+  width: 36px;
+  height: 36px;
+  background-color: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-close:hover {
+  background-color: var(--surface-highlight);
+  color: var(--text-primary);
+  border-color: var(--accent-color, #0066cc);
+}
+
+.extension-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  background-color: var(--bg-primary);
+}
+
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+  font-size: 16px;
+}
+
+.no-extensions {
+  text-align: center;
+  padding: 80px 40px;
+  color: var(--text-muted);
+}
+
+.no-extensions p {
+  margin: 8px 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.extensions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.extension-item {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.extension-item:hover {
+  border-color: var(--accent-color, #0066cc);
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
+}
+
+.extension-item.selected {
+  border-color: var(--accent-color, #0066cc);
+  background-color: var(--bg-elevated);
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.15);
+}
+
+.extension-item.disabled {
+  opacity: 0.6;
+}
+
+.extension-item-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.extension-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.extension-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.extension-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.extension-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.extension-publisher {
+  font-weight: 500;
+}
+
+.extension-version {
+  padding: 2px 8px;
+  background-color: var(--surface-highlight);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.extension-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-toggle {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.btn-toggle.enabled {
+  background-color: #10b981;
+  color: white;
+}
+
+.btn-toggle.disabled {
+  background-color: var(--surface-highlight);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.btn-toggle:hover {
+  transform: scale(1.1);
+}
+
+.btn-uninstall {
+  width: 32px;
+  height: 32px;
+  background-color: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.btn-uninstall:hover {
+  background-color: #ef4444;
+  border-color: #ef4444;
+  transform: scale(1.1);
+}
+
+.extension-description {
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.extension-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.extension-categories {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.extension-category {
+  padding: 2px 8px;
+  background-color: var(--surface-highlight);
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.extension-installed-date {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.extension-details {
+  border-top: 1px solid var(--border);
+  padding: 24px;
+  background-color: var(--bg-elevated);
+}
+
+.extension-details h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  color: var(--text-primary);
+}
+
+.details-content p {
+  margin: 8px 0;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.details-content strong {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+/* Notification styles */
+.extension-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s;
+  z-index: 10000;
+  max-width: 400px;
+}
+
+.extension-notification.success {
+  background-color: #10b981;
+}
+
+.extension-notification.error {
+  background-color: #ef4444;
+}
+
+.extension-notification.info {
+  background-color: #3b82f6;
+}
+
+.extension-notification.warning {
+  background-color: #f59e0b;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* Scrollbar styles */
+.extension-panel-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.extension-panel-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.extension-panel-body::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.extension-panel-body::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}

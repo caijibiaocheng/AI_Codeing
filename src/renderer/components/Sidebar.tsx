@@ -1,0 +1,161 @@
+import React from 'react';
+
+interface SidebarProps {
+  onOpenSettings: () => void;
+  onToggleChat: () => void;
+  isChatOpen: boolean;
+  onToggleTerminal?: () => void;
+  isTerminalOpen?: boolean;
+  onToggleGit?: () => void;
+  showGitPanel?: boolean;
+  onToggleSearch?: () => void;
+  isSearchOpen?: boolean;
+  onToggleComposer?: () => void;
+  isComposerOpen?: boolean;
+  onToggleExtensions?: () => void;
+  isExtensionsOpen?: boolean;
+  onToggleAIAssistant?: () => void;
+  isAIAssistantOpen?: boolean;
+  onToggleTodo?: () => void;
+  isTodoOpen?: boolean;
+  onToggleGitStash?: () => void;
+  isGitStashOpen?: boolean;
+  onToggleTools?: () => void;
+  isToolsOpen?: boolean;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ 
+  onOpenSettings, 
+  onToggleChat, 
+  isChatOpen,
+  onToggleTerminal,
+  isTerminalOpen = false,
+  onToggleGit,
+  showGitPanel = false,
+  onToggleSearch,
+  isSearchOpen = false,
+  onToggleComposer,
+  isComposerOpen = false,
+  onToggleExtensions,
+  isExtensionsOpen = false,
+  onToggleAIAssistant,
+  isAIAssistantOpen = false,
+  onToggleTodo,
+  isTodoOpen = false,
+  onToggleGitStash,
+  isGitStashOpen = false,
+  onToggleTools,
+  isToolsOpen = false
+}) => {
+  return (
+    <div className="sidebar">
+      <div 
+        className={`sidebar-icon ${isChatOpen ? 'active' : ''}`}
+        onClick={onToggleChat}
+        title="AI Chat"
+      >
+        💬
+      </div>
+      
+      {onToggleComposer && (
+        <div 
+          className={`sidebar-icon ${isComposerOpen ? 'active' : ''}`}
+          onClick={onToggleComposer}
+          title="AI Composer (Ctrl+Shift+C)"
+        >
+          ✨
+        </div>
+      )}
+      
+      {onToggleAIAssistant && (
+        <div 
+          className={`sidebar-icon ${isAIAssistantOpen ? 'active' : ''}`}
+          onClick={onToggleAIAssistant}
+          title="AI Assistant (Ctrl+Shift+A)"
+        >
+          🤖
+        </div>
+      )}
+      
+      {onToggleGit && (
+        <div 
+          className={`sidebar-icon ${showGitPanel ? 'active' : ''}`}
+          onClick={onToggleGit}
+          title="Git (Ctrl+Shift+G)"
+        >
+          🔀
+        </div>
+      )}
+      
+      {onToggleSearch && (
+        <div 
+          className={`sidebar-icon ${isSearchOpen ? 'active' : ''}`}
+          onClick={onToggleSearch}
+          title="Search (Ctrl+Shift+F)"
+        >
+          🔍
+        </div>
+      )}
+      
+      {onToggleExtensions && (
+        <div 
+          className={`sidebar-icon ${isExtensionsOpen ? 'active' : ''}`}
+          onClick={onToggleExtensions}
+          title="Extensions (Ctrl+Shift+X)"
+        >
+          📦
+        </div>
+      )}
+      
+      {onToggleTerminal && (
+        <div 
+          className={`sidebar-icon ${isTerminalOpen ? 'active' : ''}`}
+          onClick={onToggleTerminal}
+          title="Terminal (Ctrl+`)"
+        >
+          ⌨️
+        </div>
+      )}
+      
+      {onToggleTodo && (
+        <div 
+          className={`sidebar-icon ${isTodoOpen ? 'active' : ''}`}
+          onClick={onToggleTodo}
+          title="TODO Tracker (Ctrl+Shift+T)"
+        >
+          ✅
+        </div>
+      )}
+      
+      {onToggleGitStash && (
+        <div 
+          className={`sidebar-icon ${isGitStashOpen ? 'active' : ''}`}
+          onClick={onToggleGitStash}
+          title="Git Stash (Ctrl+Shift+S)"
+        >
+          📥
+        </div>
+      )}
+      
+      {onToggleTools && (
+        <div 
+          className={`sidebar-icon ${isToolsOpen ? 'active' : ''}`}
+          onClick={onToggleTools}
+          title="Developer Tools (Ctrl+Shift+U)"
+        >
+          🛠️
+        </div>
+      )}
+      
+      <div 
+        className="sidebar-icon"
+        onClick={onOpenSettings}
+        title="Settings"
+      >
+        ⚙️
+      </div>
+    </div>
+  );
+};
+
+export default Sidebar;
