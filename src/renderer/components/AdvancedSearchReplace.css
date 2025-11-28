@@ -1,0 +1,447 @@
+/**
+ * 高级搜索和替换样式
+ */
+
+.advanced-search-replace {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--background-secondary, #1e1e1e);
+  border-left: 1px solid var(--border-color, #333);
+  color: var(--text-primary, #e0e0e0);
+}
+
+.advanced-search-replace .panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color, #333);
+  background-color: var(--background-primary, #252526);
+}
+
+.advanced-search-replace .panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.advanced-search-replace .panel-icon {
+  font-size: 16px;
+}
+
+.advanced-search-replace .close-button {
+  background: none;
+  border: none;
+  color: var(--text-secondary, #a0a0a0);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.advanced-search-replace .close-button:hover {
+  background-color: var(--background-tertiary, #3e3e42);
+  color: var(--text-primary, #e0e0e0);
+}
+
+.advanced-search-replace .panel-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+/* 输入组 */
+.advanced-search-replace .search-input-group,
+.advanced-search-replace .replace-input-group {
+  margin-bottom: 12px;
+}
+
+.advanced-search-replace .search-input-group label,
+.advanced-search-replace .replace-input-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary, #a0a0a0);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.advanced-search-replace .input-with-icon {
+  display: flex;
+  position: relative;
+}
+
+.advanced-search-replace .search-input,
+.advanced-search-replace .replace-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color, #555);
+  border-radius: 4px;
+  background-color: var(--editor-background, #1e1e1e);
+  color: var(--text-primary, #e0e0e0);
+  font-size: 13px;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: 'Consolas', 'Monaco', monospace;
+}
+
+.advanced-search-replace .search-input:focus,
+.advanced-search-replace .replace-input:focus {
+  border-color: var(--accent-color, #007acc);
+  box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+}
+
+.advanced-search-replace .history-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-secondary, #a0a0a0);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+}
+
+.advanced-search-replace .history-toggle:hover {
+  background-color: var(--background-tertiary, #3e3e42);
+  color: var(--text-primary, #e0e0e0);
+}
+
+/* 搜索历史下拉框 */
+.advanced-search-replace .history-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--background-tertiary, #3e3e42);
+  border: 1px solid var(--border-color, #555);
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  margin-top: -4px;
+}
+
+.advanced-search-replace .history-item {
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid var(--border-color, #2d2d30);
+}
+
+.advanced-search-replace .history-item:last-child {
+  border-bottom: none;
+}
+
+.advanced-search-replace .history-item:hover {
+  background-color: var(--background-secondary, #1e1e1e);
+}
+
+.advanced-search-replace .history-query {
+  font-size: 12px;
+  color: var(--text-primary, #e0e0e0);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.advanced-search-replace .history-count {
+  font-size: 11px;
+  color: var(--text-tertiary, #808080);
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+/* 搜索选项 */
+.advanced-search-replace .search-options {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 8px;
+  background-color: var(--background-tertiary, #3e3e42);
+  border-radius: 4px;
+}
+
+.advanced-search-replace .option-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.advanced-search-replace .option-checkbox input[type="checkbox"] {
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+}
+
+.advanced-search-replace .option-checkbox span {
+  font-size: 12px;
+  color: var(--text-secondary, #a0a0a0);
+  font-weight: 500;
+  font-family: 'Menlo', 'Monaco', monospace;
+}
+
+.advanced-search-replace .option-checkbox:hover span {
+  color: var(--text-primary, #e0e0e0);
+}
+
+/* 操作按钮 */
+.advanced-search-replace .action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.advanced-search-replace .btn-primary {
+  padding: 8px 12px;
+  background-color: var(--accent-color, #007acc);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.advanced-search-replace .btn-primary:hover:not(:disabled) {
+  background-color: #005a9e;
+  transform: translateY(-1px);
+}
+
+.advanced-search-replace .btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 结果统计 */
+.advanced-search-replace .results-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 12px;
+  background-color: var(--background-tertiary, #3e3e42);
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.advanced-search-replace .summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.advanced-search-replace .summary-item .label {
+  font-size: 11px;
+  color: var(--text-tertiary, #808080);
+  text-transform: uppercase;
+}
+
+.advanced-search-replace .summary-item .value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-color, #007acc);
+}
+
+/* 结果列表 */
+.advanced-search-replace .results-list {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 12px;
+  border: 1px solid var(--border-color, #333);
+  border-radius: 4px;
+  background-color: var(--background-tertiary, #3e3e42);
+}
+
+.advanced-search-replace .empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  color: var(--text-tertiary, #808080);
+  font-size: 13px;
+  text-align: center;
+}
+
+.advanced-search-replace .result-item {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-color, #2d2d30);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.advanced-search-replace .result-item:last-child {
+  border-bottom: none;
+}
+
+.advanced-search-replace .result-item:hover {
+  background-color: var(--background-secondary, #1e1e1e);
+}
+
+.advanced-search-replace .result-item.selected {
+  background-color: var(--accent-color, #007acc);
+  background-color: rgba(0, 122, 204, 0.3);
+  border-left: 3px solid var(--accent-color, #007acc);
+}
+
+.advanced-search-replace .result-line {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 4px;
+  font-size: 11px;
+}
+
+.advanced-search-replace .line-number {
+  color: var(--accent-color, #007acc);
+  font-weight: 500;
+}
+
+.advanced-search-replace .column-number {
+  color: var(--text-tertiary, #808080);
+}
+
+.advanced-search-replace .result-preview {
+  font-size: 12px;
+  color: var(--text-secondary, #a0a0a0);
+  font-family: 'Consolas', 'Monaco', monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 替换预览 */
+.advanced-search-replace .preview-section {
+  padding: 12px;
+  background-color: var(--background-tertiary, #3e3e42);
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.advanced-search-replace .preview-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary, #a0a0a0);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.advanced-search-replace .preview-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.advanced-search-replace .preview-line {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.advanced-search-replace .preview-line .label {
+  color: var(--text-tertiary, #808080);
+  font-weight: 500;
+  min-width: 50px;
+}
+
+.advanced-search-replace .preview-line .text {
+  color: var(--text-primary, #e0e0e0);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: 'Consolas', 'Monaco', monospace;
+}
+
+/* 快捷键信息 */
+.advanced-search-replace .shortcuts-info {
+  padding: 12px;
+  background-color: var(--background-primary, #252526);
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.advanced-search-replace .info-title {
+  font-weight: 600;
+  color: var(--text-secondary, #a0a0a0);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.advanced-search-replace .shortcuts-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.advanced-search-replace .shortcuts-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-tertiary, #808080);
+}
+
+.advanced-search-replace kbd {
+  padding: 2px 6px;
+  background-color: var(--background-tertiary, #3e3e42);
+  border: 1px solid var(--border-color, #555);
+  border-radius: 3px;
+  font-family: 'Menlo', 'Monaco', monospace;
+  font-size: 11px;
+}
+
+/* 滚动条 */
+.advanced-search-replace .results-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.advanced-search-replace .results-list::-webkit-scrollbar-track {
+  background-color: var(--background-tertiary, #3e3e42);
+}
+
+.advanced-search-replace .results-list::-webkit-scrollbar-thumb {
+  background-color: var(--border-color, #555);
+  border-radius: 4px;
+}
+
+.advanced-search-replace .results-list::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-secondary, #a0a0a0);
+}
+
+.advanced-search-replace .panel-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.advanced-search-replace .panel-content::-webkit-scrollbar-track {
+  background-color: var(--background-secondary, #1e1e1e);
+}
+
+.advanced-search-replace .panel-content::-webkit-scrollbar-thumb {
+  background-color: var(--border-color, #555);
+  border-radius: 4px;
+}
+
+.advanced-search-replace .panel-content::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-secondary, #a0a0a0);
+}

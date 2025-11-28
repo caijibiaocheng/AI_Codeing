@@ -40,6 +40,9 @@ export interface PanelState {
   isKeyBindingsManagerOpen: boolean;
   isEnvironmentManagerOpen: boolean;
   isTaskQueuePanelOpen: boolean;
+  isSymbolNavigationOpen: boolean;
+  isRefactoringToolsOpen: boolean;
+  isAdvancedSearchReplaceOpen: boolean;
 }
 
 // Context 值类型
@@ -97,6 +100,9 @@ const defaultPanelState: PanelState = {
   isKeyBindingsManagerOpen: false,
   isEnvironmentManagerOpen: false,
   isTaskQueuePanelOpen: false,
+  isSymbolNavigationOpen: false,
+  isRefactoringToolsOpen: false,
+  isAdvancedSearchReplaceOpen: false,
 };
 
 // 创建 Context
