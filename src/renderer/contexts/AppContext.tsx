@@ -36,6 +36,9 @@ export interface PanelState {
   isRecentFilesPanelOpen: boolean;
   isOutlinePanelOpen: boolean;
   isProblemsPanelOpen: boolean;
+  isProjectTemplatesPanelOpen: boolean;
+  isKeyBindingsManagerOpen: boolean;
+  isEnvironmentManagerOpen: boolean;
 }
 
 // Context 值类型
@@ -89,6 +92,9 @@ const defaultPanelState: PanelState = {
   isRecentFilesPanelOpen: false,
   isOutlinePanelOpen: false,
   isProblemsPanelOpen: false,
+  isProjectTemplatesPanelOpen: false,
+  isKeyBindingsManagerOpen: false,
+  isEnvironmentManagerOpen: false,
 };
 
 // 创建 Context

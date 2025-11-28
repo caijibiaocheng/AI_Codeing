@@ -28,7 +28,10 @@ import {
   registerGitHandlers,
   registerAIHandlers,
   registerWorkspaceHandlers,
-  registerExtensionHandlers
+  registerExtensionHandlers,
+  setupProjectTemplatesHandlers,
+  setupKeyBindingsHandlers,
+  setupEnvironmentHandlers
 } from './handlers';
 import { registerAIAssistantHandlers } from './handlers/aiAssistantHandlers';
 import { registerProjectManagementHandlers } from './handlers/projectManagementHandlers';
@@ -411,6 +414,25 @@ function registerCoreHandlers() {
     }
   });
 
+  // ========== 对话框操作 ==========
+  ipcMain.handle('show-open-dialog', async (_, options) => {
+    try {
+      return await dialog.showOpenDialog(options);
+    } catch (error: any) {
+      console.error('[IPC] Error showing open dialog', error);
+      return { canceled: true };
+    }
+  });
+
+  ipcMain.handle('show-save-dialog', async (_, options) => {
+    try {
+      return await dialog.showSaveDialog(options);
+    } catch (error: any) {
+      console.error('[IPC] Error showing save dialog', error);
+      return { canceled: true };
+    }
+  });
+
   // ========== 应用语言更新 ==========
   ipcMain.on('update-app-language', (_, locale: string) => {
     try {
@@ -437,6 +459,11 @@ function registerAllHandlers() {
     registerProjectManagementHandlers(projectManagementService);
     registerWorkspaceHandlers(workspaceService);
     registerExtensionHandlers(extensionService, () => mainWindow);
+    
+    // 新增的功能处理器
+    setupProjectTemplatesHandlers();
+    setupKeyBindingsHandlers();
+    setupEnvironmentHandlers();
     
     console.log('[Main] All IPC handlers registered successfully');
   } catch (error: any) {

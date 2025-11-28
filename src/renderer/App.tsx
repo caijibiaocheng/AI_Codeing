@@ -36,6 +36,9 @@ import Layout from './components/Layout';
 import RecentFilesPanel from './components/RecentFilesPanel';
 import OutlinePanel from './components/OutlinePanel';
 import ProblemsPanel from './components/ProblemsPanel';
+import ProjectTemplatesPanel from './components/ProjectTemplatesPanel';
+import KeyBindingsManager from './components/KeyBindingsManager';
+import EnvironmentManager from './components/EnvironmentManager';
 
 // Context & Hooks
 import { AppProvider, useApp, usePanels, useEditorSettings, useCurrentFolder } from './contexts';
@@ -58,6 +61,9 @@ import './components/Layout.css';
 import './components/RecentFilesPanel.css';
 import './components/OutlinePanel.css';
 import './components/ProblemsPanel.css';
+import './components/ProjectTemplatesPanel.css';
+import './components/KeyBindingsManager.css';
+import './components/EnvironmentManager.css';
 
 // ==================== 主应用内容 ====================
 const AppContent: React.FC = () => {
@@ -328,7 +334,7 @@ const AppContent: React.FC = () => {
         e.preventDefault();
         togglePanel('isToolsPanelOpen');
       }
-      if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+      if (e.ctrlKey && e.shiftKey && e.key === 'I') {
         e.preventDefault();
         togglePanel('isSnippetPanelOpen');
       }
@@ -351,6 +357,18 @@ const AppContent: React.FC = () => {
       if (e.ctrlKey && e.shiftKey && e.key === 'D') {
         e.preventDefault();
         togglePanel('isProblemsPanelOpen');
+      }
+      if (e.ctrlKey && e.shiftKey && e.key === 'N') {
+        e.preventDefault();
+        togglePanel('isProjectTemplatesPanelOpen');
+      }
+      if (e.ctrlKey && e.shiftKey && e.key === 'K') {
+        e.preventDefault();
+        togglePanel('isKeyBindingsManagerOpen');
+      }
+      if (e.ctrlKey && e.shiftKey && e.key === 'E') {
+        e.preventDefault();
+        togglePanel('isEnvironmentManagerOpen');
       }
     };
 
@@ -610,6 +628,27 @@ const AppContent: React.FC = () => {
         />
       )}
 
+      {/* 项目模板面板 */}
+      {panels.isProjectTemplatesPanelOpen && (
+        <ProjectTemplatesPanel
+          onClose={() => setPanel('isProjectTemplatesPanelOpen', false)}
+        />
+      )}
+
+      {/* 快捷键管理面板 */}
+      {panels.isKeyBindingsManagerOpen && (
+        <KeyBindingsManager
+          onClose={() => setPanel('isKeyBindingsManagerOpen', false)}
+        />
+      )}
+
+      {/* 环境变量管理面板 */}
+      {panels.isEnvironmentManagerOpen && (
+        <EnvironmentManager
+          onClose={() => setPanel('isEnvironmentManagerOpen', false)}
+        />
+      )}
+
       {/* 设置模态框 */}
       {panels.isSettingsOpen && (
         <SettingsModal
@@ -770,6 +809,30 @@ const AppContent: React.FC = () => {
             icon: '💬',
             category: 'AI',
             action: () => togglePanel('isChatOpen')
+          },
+          {
+            id: 'tools.templates',
+            title: '项目模板',
+            description: '打开项目模板管理器',
+            icon: '📁',
+            category: '工具',
+            action: () => togglePanel('isProjectTemplatesPanelOpen')
+          },
+          {
+            id: 'tools.keybindings',
+            title: '快捷键管理',
+            description: '管理键盘快捷键',
+            icon: '⌨️',
+            category: '工具',
+            action: () => togglePanel('isKeyBindingsManagerOpen')
+          },
+          {
+            id: 'tools.environment',
+            title: '环境变量管理',
+            description: '管理环境变量配置',
+            icon: '🌍',
+            category: '工具',
+            action: () => togglePanel('isEnvironmentManagerOpen')
           }
         ]}
         theme={uiTheme}

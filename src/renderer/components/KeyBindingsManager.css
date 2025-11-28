@@ -1,0 +1,243 @@
+/* 快捷键管理器样式 */
+.keybindings-list {
+  padding: 16px;
+}
+
+.keybinding-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+.keybinding-item:hover {
+  background: var(--background-color-secondary);
+}
+
+.keybinding-item:last-child {
+  border-bottom: none;
+}
+
+.keybinding-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.keybinding-command {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-color);
+  margin-bottom: 4px;
+}
+
+.keybinding-description {
+  font-size: 14px;
+  color: var(--text-color-secondary);
+  margin-bottom: 4px;
+}
+
+.keybinding-custom-badge {
+  display: inline-block;
+  background: var(--accent-color);
+  color: white;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.keybinding-actions {
+  margin-left: 16px;
+  min-width: 300px;
+}
+
+.keybinding-editor {
+  width: 100%;
+}
+
+.key-recording {
+  text-align: center;
+  padding: 8px;
+  background: var(--background-color-tertiary);
+  border-radius: 4px;
+  border: 2px solid var(--accent-color);
+}
+
+.recording-indicator {
+  color: var(--error-color);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.recorded-keys {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  color: var(--text-color-primary);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.conflict-warning {
+  color: var(--warning-color);
+  font-size: 12px;
+  margin-bottom: 8px;
+  padding: 4px 8px;
+  background: rgba(255, 165, 0, 0.1);
+  border-radius: 4px;
+}
+
+.keybinding-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.keybinding-keys {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 12px;
+  background: var(--background-color-tertiary);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  color: var(--text-color-primary);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  min-width: 100px;
+  text-align: center;
+}
+
+.keybinding-buttons {
+  display: flex;
+  gap: 8px;
+  margin-left: 12px;
+}
+
+.keybinding-buttons button {
+  padding: 4px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--background-color-primary);
+  color: var(--text-color-primary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.edit-button:hover {
+  background: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
+.save-button:hover:not(:disabled) {
+  background: var(--success-color);
+  color: white;
+  border-color: var(--success-color);
+}
+
+.save-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cancel-button:hover {
+  background: var(--error-color);
+  color: white;
+  border-color: var(--error-color);
+}
+
+.reset-button:hover {
+  background: var(--warning-color);
+  color: white;
+  border-color: var(--warning-color);
+}
+
+.toolbar-button {
+  padding: 6px 12px;
+  background: var(--background-color-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-color-primary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.toolbar-button:hover {
+  background: var(--background-color-hover);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .keybinding-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .keybinding-actions {
+    margin-left: 0;
+    min-width: 100%;
+  }
+  
+  .keybinding-display {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .keybinding-buttons {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+/* 键盘样式增强 */
+kbd {
+  display: inline-block;
+  padding: 3px 6px;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--text-color-primary);
+  vertical-align: middle;
+  background-color: var(--background-color-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.1);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+/* 焦点状态 */
+.keybinding-buttons button:focus,
+.toolbar-button:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* 动画效果 */
+.keybinding-item {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
