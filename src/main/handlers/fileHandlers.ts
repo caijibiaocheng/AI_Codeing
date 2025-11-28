@@ -1,5 +1,6 @@
 /**
  * 文件操作相关的 IPC handlers
+ * 包括读写、创建、删除、重命名、搜索等文件操作
  */
 import { ipcMain } from 'electron';
 import * as path from 'path';
@@ -7,8 +8,18 @@ import { promises as fs } from 'fs';
 import type Store from 'electron-store';
 import { FILE_SIZE_LIMIT, MAX_RECENT_FILES, EXCLUDED_DIRECTORIES, MAX_SEARCH_RESULTS } from '../../shared/constants';
 
+/**
+ * 注册所有文件操作的 IPC handlers
+ * @param store electron-store 实例用于持久化存储
+ */
 export function registerFileHandlers(store: Store) {
-  // 读取文件
+  // ========== 文件读写 ==========
+
+  /**
+   * 读取文件内容
+   * @param filePath 文件路径
+   * @returns 文件内容或错误信息
+   */
   ipcMain.handle('read-file', async (_, filePath: string) => {
     try {
       if (!filePath || typeof filePath !== 'string') {
@@ -23,19 +34,24 @@ export function registerFileHandlers(store: Store) {
       }
       
       if (stats.size > FILE_SIZE_LIMIT) {
-        throw new Error('File too large (max 10MB)');
+        throw new Error(`File too large (max ${FILE_SIZE_LIMIT / 1024 / 1024}MB)`);
       }
       
       const content = await fs.readFile(normalizedPath, 'utf-8');
       console.log(`[FileOp] Read file: ${normalizedPath} (${stats.size} bytes)`);
       return { success: true, data: content };
     } catch (error: any) {
-      console.error(`[FileOp] Failed to read file ${filePath}:`, error);
+      console.error(`[FileOp] Failed to read file ${filePath}:`, error.message);
       return { success: false, error: error.message };
     }
   });
 
-  // 写入文件
+  /**
+   * 写入文件内容
+   * @param filePath 文件路径
+   * @param content 文件内容
+   * @returns 操作结果
+   */
   ipcMain.handle('write-file', async (_, filePath: string, content: string) => {
     try {
       if (!filePath || typeof filePath !== 'string') {
@@ -47,7 +63,7 @@ export function registerFileHandlers(store: Store) {
       }
       
       if (content.length > FILE_SIZE_LIMIT) {
-        throw new Error('Content too large (max 10MB)');
+        throw new Error(`Content too large (max ${FILE_SIZE_LIMIT / 1024 / 1024}MB)`);
       }
       
       const normalizedPath = path.normalize(filePath);
@@ -59,7 +75,7 @@ export function registerFileHandlers(store: Store) {
       console.log(`[FileOp] Wrote file: ${normalizedPath} (${content.length} bytes)`);
       return { success: true };
     } catch (error: any) {
-      console.error(`[FileOp] Failed to write file ${filePath}:`, error);
+      console.error(`[FileOp] Failed to write file ${filePath}:`, error.message);
       return { success: false, error: error.message };
     }
   });
