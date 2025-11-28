@@ -88,6 +88,12 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
+}
+
+/* 确保状态栏在底部 */
+.main-content > div > div:last-child {
+  flex-shrink: 0;
 }
 
 .chat-panel {

@@ -1,6 +1,7 @@
 /**
  * AI Code Editor - 渲染进程入口
  * 重构版本：使用 Context 和自定义 Hooks
+ * 新增：产品级UI组件和布局优化
  */
 import React, { useEffect, useState, useCallback } from 'react';
 
@@ -11,13 +12,25 @@ import Sidebar from './components/Sidebar';
 import SettingsModal from './components/SettingsModal';
 import FileExplorer from './components/FileExplorer';
 import QuickOpenModal from './components/QuickOpenModal';
+import RecentFilesModal from './components/RecentFilesModal';
 import GlobalSearchPanel from './components/GlobalSearchPanel';
 import TabBar, { Tab } from './components/TabBar';
 import GitPanel from './components/GitPanel';
 import AIComposer from './components/AIComposer';
+import AIAssistantPanel from './components/AIAssistantPanel';
+import MarkdownPreview from './components/MarkdownPreview';
 import DiffViewer from './components/DiffViewer';
 import Terminal from './components/Terminal';
 import ExtensionPanel from './components/ExtensionPanel';
+import TodoPanel from './components/TodoPanel';
+import GitStashPanel from './components/GitStashPanel';
+import ToolsPanel from './components/ToolsPanel';
+import SnippetPanel from './components/SnippetPanel';
+import BookmarkPanel from './components/BookmarkPanel';
+import CodeMetricsPanel from './components/CodeMetricsPanel';
+import CommandPalette from './components/CommandPalette';
+import QuickActions from './components/QuickActions';
+import Layout from './components/Layout';
 
 // Context & Hooks
 import { AppProvider, useApp, usePanels, useEditorSettings, useCurrentFolder } from './contexts';
@@ -27,7 +40,17 @@ import { useTabs } from './hooks';
 import { detectLanguage } from './utils';
 import { t } from './i18n';
 
+// CSS
 import './App.css';
+import './components/StatusBar.css';
+import './components/Breadcrumb.css';
+import './components/CommandPalette.css';
+import './components/NotificationSystem.css';
+import './components/QuickActions.css';
+import './components/EnhancedSidebar.css';
+import './components/LoadingSpinner.css';
+import './components/SplashScreen.css';
+import './components/Layout.css';
 
 // ==================== 主应用内容 ====================
 const AppContent: React.FC = () => {
@@ -56,6 +79,20 @@ const AppContent: React.FC = () => {
     path: string;
   } | null>(null);
 
+  // Git 状态数据
+  const [gitStatus, setGitStatus] = useState<{
+    branch?: string;
+    status?: string;
+    ahead?: number;
+    behind?: number;
+  } | null>(null);
+
+  // 光标位置
+  const [cursorPosition, setCursorPosition] = useState({
+    line: 1,
+    column: 1
+  });
+
   // 初始化语言设置
   useEffect(() => {
     const loadLocale = async () => {
@@ -67,6 +104,33 @@ const AppContent: React.FC = () => {
       }
     };
     loadLocale();
+  }, []);
+
+  // 显示欢迎通知
+  useEffect(() => {
+    if (window.notificationSystem) {
+      setTimeout(() => {
+        window.notificationSystem.success(
+          '欢迎使用 AI 代码编辑器！',
+          '按 Ctrl+Shift+P 打开命令面板，体验全新功能',
+          {
+            duration: 6000,
+            actions: [
+              {
+                label: '了解新功能',
+                primary: true,
+                action: () => {
+                  window.notificationSystem.info(
+                    '新功能介绍',
+                    '✨ 状态栏：显示文件信息、Git状态、光标位置\n🧭 面包屑导航：快速导航文件路径\n⚡ 命令面板：Ctrl+Shift+P 快速执行命令\n🔔 通知系统：实时反馈操作结果\n⚡ 快速操作栏：编辑器右上角快捷按钮'
+                  );
+                }
+              }
+            ]
+          }
+        );
+      }, 2000);
+    }
   }, []);
 
   // 监听文件/文件夹打开事件
@@ -96,6 +160,44 @@ const AppContent: React.FC = () => {
     const offSave = window.electronAPI.onSaveFile(saveActiveTab);
     return () => offSave?.();
   }, [saveActiveTab]);
+
+  // 获取Git状态
+  useEffect(() => {
+    if (!currentFolder || !window.electronAPI) return;
+
+    const fetchGitStatus = async () => {
+      try {
+        const result = await window.electronAPI.executeCommand('git status --porcelain -b', currentFolder);
+        if (result.success) {
+          const lines = result.output.split('\n');
+          const branchLine = lines.find(line => line.startsWith('##'));
+          const statusLines = lines.filter(line => line && !line.startsWith('##'));
+          
+          let branch = 'main';
+          let status = statusLines.join('\n');
+          
+          if (branchLine) {
+            const match = branchLine.match(/## (.+?)(?:\.\.\..+?)?(?: \[(.+?)\])?/);
+            if (match) {
+              branch = match[1];
+              if (match[2]) {
+                status = status + ' ' + match[2];
+              }
+            }
+          }
+          
+          setGitStatus({ branch, status });
+        }
+      } catch (error) {
+        console.error('[Git] Failed to fetch status:', error);
+      }
+    };
+
+    fetchGitStatus();
+    const interval = setInterval(fetchGitStatus, 30000); // 每30秒更新一次
+
+    return () => clearInterval(interval);
+  }, [currentFolder]);
 
   // 设置保存回调
   const handleSettingsSaved = useCallback((opts: {
@@ -133,10 +235,10 @@ const AppContent: React.FC = () => {
         });
         setPanel('isDiffViewOpen', true);
       } else {
-        alert('Failed to load file diff');
+        window.notificationSystem?.error('查看Diff失败', '无法获取文件差异信息');
       }
     } catch (error: any) {
-      alert(`Error: ${error.message}`);
+      window.notificationSystem?.error('错误', `查看Diff时发生错误: ${error.message}`);
     }
   }, [currentFolder, setPanel]);
 
@@ -146,15 +248,16 @@ const AppContent: React.FC = () => {
     
     const isSupported = await window.electronAPI.isFormatSupported(activeTab.filePath);
     if (!isSupported) {
-      alert(t('editor.formatNotSupported'));
+      window.notificationSystem?.warning('格式化不支持', '当前文件类型不支持自动格式化');
       return;
     }
     
     const result = await window.electronAPI.formatCode(fileContent, activeTab.filePath);
     if (result.success && result.formatted) {
       setFileContent(result.formatted);
+      window.notificationSystem?.success('格式化成功', '代码已成功格式化');
     } else if (result.error) {
-      alert(`Format error: ${result.error}`);
+      window.notificationSystem?.error('格式化失败', result.error);
     }
   }, [activeTab, fileContent, setFileContent]);
 
@@ -164,6 +267,14 @@ const AppContent: React.FC = () => {
       if (e.ctrlKey && e.key === 'p' && !e.shiftKey) {
         e.preventDefault();
         setPanel('isQuickOpenOpen', true);
+      }
+      if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+        e.preventDefault();
+        setPanel('isCommandPaletteOpen', true);
+      }
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        setPanel('isRecentFilesOpen', true);
       }
       if (e.ctrlKey && e.shiftKey && e.key === 'F') {
         e.preventDefault();
@@ -181,6 +292,16 @@ const AppContent: React.FC = () => {
         e.preventDefault();
         togglePanel('isExtensionPanelOpen');
       }
+      if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+        e.preventDefault();
+        togglePanel('isAIAssistantOpen');
+      }
+      if (e.ctrlKey && e.shiftKey && e.key === 'V') {
+        e.preventDefault();
+        if (activeTab?.language === 'markdown') {
+          togglePanel('isMarkdownPreviewOpen');
+        }
+      }
       if (e.ctrlKey && e.key === '`') {
         e.preventDefault();
         togglePanel('isTerminalOpen');
@@ -189,11 +310,35 @@ const AppContent: React.FC = () => {
         e.preventDefault();
         handleFormatCode();
       }
+      if (e.ctrlKey && e.shiftKey && e.key === 'T') {
+        e.preventDefault();
+        togglePanel('isTodoPanelOpen');
+      }
+      if (e.ctrlKey && e.shiftKey && e.key === 'S') {
+        e.preventDefault();
+        togglePanel('isGitStashPanelOpen');
+      }
+      if (e.ctrlKey && e.shiftKey && e.key === 'U') {
+        e.preventDefault();
+        togglePanel('isToolsPanelOpen');
+      }
+      if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+        e.preventDefault();
+        togglePanel('isSnippetPanelOpen');
+      }
+      if (e.ctrlKey && e.shiftKey && e.key === 'B') {
+        e.preventDefault();
+        togglePanel('isBookmarkPanelOpen');
+      }
+      if (e.ctrlKey && e.shiftKey && e.key === 'M') {
+        e.preventDefault();
+        togglePanel('isCodeMetricsPanelOpen');
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [togglePanel, setPanel, handleFormatCode]);
+  }, [togglePanel, setPanel, handleFormatCode, activeTab]);
 
   // electronAPI 不可用时的降级 UI
   if (!window.electronAPI) {
@@ -206,148 +351,367 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <div className={`app theme-${uiTheme}`}>
-      {/* 侧边栏 */}
-      <Sidebar
-        onOpenSettings={() => setPanel('isSettingsOpen', true)}
-        onToggleChat={() => togglePanel('isChatOpen')}
-        isChatOpen={panels.isChatOpen}
-        onToggleTerminal={() => togglePanel('isTerminalOpen')}
-        isTerminalOpen={panels.isTerminalOpen}
-        onToggleGit={() => togglePanel('showGitPanel')}
-        showGitPanel={panels.showGitPanel}
-        onToggleSearch={() => togglePanel('isGlobalSearchOpen')}
-        isSearchOpen={panels.isGlobalSearchOpen}
-        onToggleComposer={() => togglePanel('isComposerOpen')}
-        isComposerOpen={panels.isComposerOpen}
-        onToggleExtensions={() => togglePanel('isExtensionPanelOpen')}
-        isExtensionsOpen={panels.isExtensionPanelOpen}
-      />
-
-      {/* 文件浏览器 */}
-      <FileExplorer 
-        rootPath={currentFolder} 
-        onFileSelect={openTab} 
-      />
-      
-      {/* Git 面板 */}
-      {panels.showGitPanel && (
-        <GitPanel 
-          rootPath={currentFolder}
-          onFileSelect={openTab}
-          onViewDiff={handleViewDiff}
+    <Layout
+      theme={uiTheme}
+      currentFilePath={activeTab?.filePath}
+      workspaceRoot={currentFolder}
+      cursorPosition={cursorPosition}
+      language={activeTab?.language}
+      gitBranch={gitStatus?.branch}
+      gitStatus={gitStatus?.status}
+      onBreadcrumbNavigate={(path) => {
+        console.log('Navigate to:', path);
+      }}
+    >
+      <div className={`app theme-${uiTheme}`}>
+        {/* 侧边栏 */}
+        <Sidebar
+          onOpenSettings={() => setPanel('isSettingsOpen', true)}
+          onToggleChat={() => togglePanel('isChatOpen')}
+          isChatOpen={panels.isChatOpen}
+          onToggleTerminal={() => togglePanel('isTerminalOpen')}
+          isTerminalOpen={panels.isTerminalOpen}
+          onToggleGit={() => togglePanel('showGitPanel')}
+          showGitPanel={panels.showGitPanel}
+          onToggleSearch={() => togglePanel('isGlobalSearchOpen')}
+          isSearchOpen={panels.isGlobalSearchOpen}
+          onToggleComposer={() => togglePanel('isComposerOpen')}
+          isComposerOpen={panels.isComposerOpen}
+          onToggleExtensions={() => togglePanel('isExtensionPanelOpen')}
+          isExtensionsOpen={panels.isExtensionPanelOpen}
+          onToggleAIAssistant={() => togglePanel('isAIAssistantOpen')}
+          isAIAssistantOpen={panels.isAIAssistantOpen}
+          onToggleTodo={() => togglePanel('isTodoPanelOpen')}
+          isTodoOpen={panels.isTodoPanelOpen}
+          onToggleGitStash={() => togglePanel('isGitStashPanelOpen')}
+          isGitStashOpen={panels.isGitStashPanelOpen}
+          onToggleTools={() => togglePanel('isToolsPanelOpen')}
+          isToolsOpen={panels.isToolsPanelOpen}
+          onToggleSnippets={() => togglePanel('isSnippetPanelOpen')}
+          isSnippetsOpen={panels.isSnippetPanelOpen}
+          onToggleBookmarks={() => togglePanel('isBookmarkPanelOpen')}
+          isBookmarksOpen={panels.isBookmarkPanelOpen}
+          onToggleCodeMetrics={() => togglePanel('isCodeMetricsPanelOpen')}
+          isCodeMetricsOpen={panels.isCodeMetricsPanelOpen}
         />
-      )}
 
-      {/* 主内容区 */}
-      <div className="main-content">
-        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
-          {!panels.isDiffViewOpen ? (
-            <>
-              <TabBar
-                tabs={tabs}
-                activeTabId={activeTabId}
-                onTabClick={switchTab}
-                onTabClose={closeTab}
+        {/* 文件浏览器 */}
+        <FileExplorer 
+          rootPath={currentFolder} 
+          onFileSelect={openTab} 
+        />
+        
+        {/* Git 面板 */}
+        {panels.showGitPanel && (
+          <GitPanel 
+            rootPath={currentFolder}
+            onFileSelect={openTab}
+            onViewDiff={handleViewDiff}
+          />
+        )}
+
+        {/* 主内容区 */}
+        <div className="main-content">
+          <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', position: 'relative' }}>
+            {!panels.isDiffViewOpen ? (
+              <>
+                <TabBar
+                  tabs={tabs}
+                  activeTabId={activeTabId}
+                  onTabClick={switchTab}
+                  onTabClose={closeTab}
+                />
+                <div style={{ display: 'flex', flex: 1, overflow: 'hidden', position: 'relative' }}>
+                  <div style={{ flex: panels.isMarkdownPreviewOpen && activeTab?.language === 'markdown' ? '1 1 50%' : '1', overflow: 'hidden', position: 'relative' }}>
+                    {/* 快速操作栏 */}
+                    <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 10 }}>
+                      <QuickActions
+                        actions={[
+                          {
+                            id: 'save',
+                            icon: '💾',
+                            title: '保存文件 (Ctrl+S)',
+                            onClick: () => {
+                              saveActiveTab();
+                              window.notificationSystem?.success('保存成功', '文件已保存');
+                            }
+                          },
+                          {
+                            id: 'format',
+                            icon: '✨',
+                            title: '格式化代码 (Shift+Alt+F)',
+                            onClick: handleFormatCode
+                          },
+                          {
+                            id: 'command',
+                            icon: '⚡',
+                            title: '命令面板 (Ctrl+Shift+P)',
+                            onClick: () => setPanel('isCommandPaletteOpen', true)
+                          }
+                        ]}
+                        theme={uiTheme}
+                      />
+                    </div>
+                    <Editor
+                      content={fileContent}
+                      onChange={setFileContent}
+                      language={activeTab?.language || 'plaintext'}
+                      theme={editorSettings.theme}
+                      fontSize={editorSettings.fontSize}
+                      fontFamily={editorSettings.fontFamily}
+                      lineHeight={editorSettings.lineHeight}
+                      filename={activeTab?.filePath}
+                      completionEnabled={true}
+                    />
+                  </div>
+                  {panels.isMarkdownPreviewOpen && activeTab?.language === 'markdown' && (
+                    <MarkdownPreview
+                      content={fileContent}
+                      onClose={() => setPanel('isMarkdownPreviewOpen', false)}
+                    />
+                  )}
+                </div>
+              </>
+            ) : diffData && (
+              <DiffViewer
+                originalContent={diffData.original}
+                modifiedContent={diffData.modified}
+                originalPath={`HEAD: ${diffData.path}`}
+                modifiedPath={`Working: ${diffData.path}`}
+                language={detectLanguage(diffData.path)}
+                theme={editorSettings.theme === 'vs-dark' || editorSettings.theme === 'hc-black' ? 'vs-dark' : 'light'}
+                onClose={() => setPanel('isDiffViewOpen', false)}
               />
-              <Editor
-                content={fileContent}
-                onChange={setFileContent}
-                language={activeTab?.language || 'plaintext'}
-                theme={editorSettings.theme}
-                fontSize={editorSettings.fontSize}
-                fontFamily={editorSettings.fontFamily}
-                lineHeight={editorSettings.lineHeight}
-                filename={activeTab?.filePath}
-                completionEnabled={true}
+            )}
+            
+            {/* 终端 */}
+            {panels.isTerminalOpen && (
+              <Terminal
+                onClose={() => setPanel('isTerminalOpen', false)}
+                workingDirectory={currentFolder || undefined}
               />
-            </>
-          ) : diffData && (
-            <DiffViewer
-              originalContent={diffData.original}
-              modifiedContent={diffData.modified}
-              originalPath={`HEAD: ${diffData.path}`}
-              modifiedPath={`Working: ${diffData.path}`}
-              language={detectLanguage(diffData.path)}
-              theme={editorSettings.theme === 'vs-dark' || editorSettings.theme === 'hc-black' ? 'vs-dark' : 'light'}
-              onClose={() => setPanel('isDiffViewOpen', false)}
-            />
-          )}
-          
-          {/* 终端 */}
-          {panels.isTerminalOpen && (
-            <Terminal
-              onClose={() => setPanel('isTerminalOpen', false)}
-              workingDirectory={currentFolder || undefined}
-            />
-          )}
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* 聊天面板 */}
-      {panels.isChatOpen && (
-        <ChatPanel
-          onClose={() => setPanel('isChatOpen', false)}
-          currentCode={fileContent}
-          onApplyCode={setFileContent}
-          theme={uiTheme}
-          contextId={activeTab?.filePath || currentFolder || 'default'}
-          language={activeTab?.language || 'plaintext'}
+        {/* 聊天面板 */}
+        {panels.isChatOpen && (
+          <ChatPanel
+            onClose={() => setPanel('isChatOpen', false)}
+            currentCode={fileContent}
+            onApplyCode={setFileContent}
+            theme={uiTheme}
+            contextId={activeTab?.filePath || currentFolder || 'default'}
+            language={activeTab?.language || 'plaintext'}
+          />
+        )}
+        
+        {/* 代码片段面板 */}
+        {panels.isSnippetPanelOpen && (
+          <div className="side-panel">
+            <SnippetPanel
+              onInsertSnippet={(code) => {
+                if (activeTab) {
+                  setFileContent(fileContent + '\n' + code);
+                  window.notificationSystem?.success('插入成功', '代码片段已插入');
+                }
+              }}
+            />
+          </div>
+        )}
+        
+        {/* 书签面板 */}
+        {panels.isBookmarkPanelOpen && (
+          <div className="side-panel">
+            <BookmarkPanel
+              currentFilePath={activeTab?.filePath}
+              onNavigateToBookmark={(filePath, line) => {
+                openTab(filePath);
+                // TODO: 跳转到指定行
+              }}
+            />
+          </div>
+        )}
+        
+        {/* 代码度量面板 */}
+        {panels.isCodeMetricsPanelOpen && (
+          <div className="side-panel">
+            <CodeMetricsPanel
+              workspacePath={currentFolder}
+            />
+          </div>
+        )}
+
+        {/* 设置模态框 */}
+        {panels.isSettingsOpen && (
+          <SettingsModal
+            onClose={() => setPanel('isSettingsOpen', false)}
+            onSettingsSaved={handleSettingsSaved}
+            currentTheme={uiTheme}
+            currentEditorTheme={editorSettings.theme}
+          />
+        )}
+
+        {/* 快速打开 */}
+        <QuickOpenModal
+          isOpen={panels.isQuickOpenOpen}
+          onClose={() => setPanel('isQuickOpenOpen', false)}
+          onFileSelect={openTab}
+          rootPath={currentFolder}
         />
-      )}
-
-      {/* 设置模态框 */}
-      {panels.isSettingsOpen && (
-        <SettingsModal
-          onClose={() => setPanel('isSettingsOpen', false)}
-          onSettingsSaved={handleSettingsSaved}
-          currentTheme={uiTheme}
-          currentEditorTheme={editorSettings.theme}
+        
+        {/* 最近文件 */}
+        <RecentFilesModal
+          isOpen={panels.isRecentFilesOpen}
+          onClose={() => setPanel('isRecentFilesOpen', false)}
+          onFileSelect={openTab}
         />
-      )}
 
-      {/* 快速打开 */}
-      <QuickOpenModal
-        isOpen={panels.isQuickOpenOpen}
-        onClose={() => setPanel('isQuickOpenOpen', false)}
-        onFileSelect={openTab}
-        rootPath={currentFolder}
-      />
-
-      {/* 全局搜索 */}
-      <GlobalSearchPanel
-        isOpen={panels.isGlobalSearchOpen}
-        onClose={() => setPanel('isGlobalSearchOpen', false)}
-        onFileOpen={openTab}
-        rootPath={currentFolder}
-      />
-      
-      {/* AI Composer */}
-      <AIComposer
-        isOpen={panels.isComposerOpen}
-        onClose={() => setPanel('isComposerOpen', false)}
-        rootPath={currentFolder}
-        openTabs={tabs.map((t: Tab) => ({ filePath: t.filePath, content: fileContent }))}
-        onApplyEdits={(edits) => {
-          edits.forEach(edit => {
-            const tab = tabs.find((t: Tab) => t.filePath.endsWith(edit.filePath));
-            if (tab) {
-              window.electronAPI.writeFile(tab.filePath, edit.newContent);
-              if (tab.id === activeTabId) {
-                setFileContent(edit.newContent);
+        {/* 全局搜索 */}
+        <GlobalSearchPanel
+          isOpen={panels.isGlobalSearchOpen}
+          onClose={() => setPanel('isGlobalSearchOpen', false)}
+          onFileOpen={openTab}
+          rootPath={currentFolder}
+        />
+        
+        {/* AI Composer */}
+        <AIComposer
+          isOpen={panels.isComposerOpen}
+          onClose={() => setPanel('isComposerOpen', false)}
+          rootPath={currentFolder}
+          openTabs={tabs.map((t: Tab) => ({ filePath: t.filePath, content: fileContent }))}
+          onApplyEdits={(edits) => {
+            edits.forEach(edit => {
+              const tab = tabs.find((t: Tab) => t.filePath.endsWith(edit.filePath));
+              if (tab) {
+                window.electronAPI.writeFile(tab.filePath, edit.newContent);
+                if (tab.id === activeTabId) {
+                  setFileContent(edit.newContent);
+                }
               }
-            }
-          });
-        }}
-      />
-      
-      {/* 扩展面板 */}
-      {panels.isExtensionPanelOpen && (
-        <ExtensionPanel
-          onClose={() => setPanel('isExtensionPanelOpen', false)}
+            });
+            window.notificationSystem?.success('应用成功', 'AI建议已应用到文件');
+          }}
         />
-      )}
-    </div>
+        
+        {/* 扩展面板 */}
+        {panels.isExtensionPanelOpen && (
+          <ExtensionPanel
+            onClose={() => setPanel('isExtensionPanelOpen', false)}
+          />
+        )}
+        
+        {/* AI 助手面板 */}
+        {panels.isAIAssistantOpen && (
+          <AIAssistantPanel
+            code={fileContent}
+            language={activeTab?.language || 'plaintext'}
+            filePath={activeTab?.filePath}
+            onClose={() => setPanel('isAIAssistantOpen', false)}
+          />
+        )}
+        
+        {/* TODO 面板 */}
+        {panels.isTodoPanelOpen && (
+          <TodoPanel
+            rootPath={currentFolder}
+            onClose={() => setPanel('isTodoPanelOpen', false)}
+            onFileOpen={(filePath, line) => {
+              openTab(filePath);
+              // TODO: 跳转到指定行
+            }}
+          />
+        )}
+        
+        {/* Git Stash 面板 */}
+        {panels.isGitStashPanelOpen && (
+          <GitStashPanel
+            rootPath={currentFolder}
+            onClose={() => setPanel('isGitStashPanelOpen', false)}
+          />
+        )}
+        
+        {/* 开发工具面板 */}
+        {panels.isToolsPanelOpen && (
+          <ToolsPanel
+            onClose={() => setPanel('isToolsPanelOpen', false)}
+          />
+        )}
+        
+        {/* 命令面板 */}
+        <CommandPalette
+          isOpen={panels.isCommandPaletteOpen || false}
+          onClose={() => setPanel('isCommandPaletteOpen', false)}
+          commands={[
+            {
+              id: 'file.new',
+              title: '新建文件',
+              description: '创建一个新的文件',
+              icon: '📄',
+              category: '文件',
+              action: () => {
+                if (window.notificationSystem) {
+                  window.notificationSystem.info('新建文件', '功能开发中...');
+                }
+              }
+            },
+            {
+              id: 'file.save',
+              title: '保存文件',
+              description: '保存当前文件',
+              icon: '💾',
+              category: '文件',
+              action: () => {
+                saveActiveTab();
+                window.notificationSystem?.success('保存成功', '文件已保存');
+              }
+            },
+            {
+              id: 'edit.format',
+              title: '格式化代码',
+              description: '格式化当前文件的代码',
+              icon: '✨',
+              category: '编辑',
+              action: handleFormatCode
+            },
+            {
+              id: 'view.terminal',
+              title: '切换终端',
+              description: '显示或隐藏终端',
+              icon: '⌨️',
+              category: '视图',
+              action: () => togglePanel('isTerminalOpen')
+            },
+            {
+              id: 'view.settings',
+              title: '打开设置',
+              description: '打开编辑器设置',
+              icon: '⚙️',
+              category: '视图',
+              action: () => setPanel('isSettingsOpen', true)
+            },
+            {
+              id: 'git.status',
+              title: 'Git 状态',
+              description: '查看Git状态',
+              icon: '🔀',
+              category: 'Git',
+              action: () => togglePanel('showGitPanel')
+            },
+            {
+              id: 'ai.chat',
+              title: 'AI 聊天',
+              description: '打开AI聊天面板',
+              icon: '💬',
+              category: 'AI',
+              action: () => togglePanel('isChatOpen')
+            }
+          ]}
+          theme={uiTheme}
+        />
+      </div>
+    </Layout>
   );
 };
 

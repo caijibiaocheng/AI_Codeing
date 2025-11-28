@@ -32,6 +32,7 @@ export interface PanelState {
   isSnippetPanelOpen: boolean;
   isBookmarkPanelOpen: boolean;
   isCodeMetricsPanelOpen: boolean;
+  isCommandPaletteOpen: boolean;
 }
 
 // Context 值类型
@@ -81,6 +82,7 @@ const defaultPanelState: PanelState = {
   isSnippetPanelOpen: false,
   isBookmarkPanelOpen: false,
   isCodeMetricsPanelOpen: false,
+  isCommandPaletteOpen: false,
 };
 
 // 创建 Context

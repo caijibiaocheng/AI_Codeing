@@ -1,0 +1,229 @@
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10001;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+  max-width: 400px;
+}
+
+.notification {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  position: relative;
+  pointer-events: all;
+  animation: notificationSlideIn 0.3s ease-out;
+  min-width: 300px;
+}
+
+@keyframes notificationSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.notification-content {
+  padding: 16px;
+  position: relative;
+  z-index: 2;
+}
+
+.notification-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.notification-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.notification-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-close:hover {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.notification-message {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.notification-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.notification-action {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.notification-action:hover {
+  background-color: var(--surface-highlight);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+.notification-action.primary {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+.notification-action.primary:hover {
+  background-color: var(--accent-strong);
+  border-color: var(--accent-strong);
+}
+
+.notification-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+  animation: notificationProgress linear forwards;
+  z-index: 1;
+}
+
+@keyframes notificationProgress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+/* 通知类型样式 */
+.notification-info {
+  border-left: 4px solid #0e639c;
+}
+
+.notification-success {
+  border-left: 4px solid #28a745;
+}
+
+.notification-warning {
+  border-left: 4px solid #ffc107;
+}
+
+.notification-error {
+  border-left: 4px solid #dc3545;
+}
+
+/* 主题适配 */
+.theme-light .notification {
+  background-color: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.theme-light .notification-message {
+  color: #5c6370;
+}
+
+.theme-light .notification-action {
+  background-color: #f3f3f3;
+  border-color: #d8dbe1;
+}
+
+.theme-light .notification-action:hover {
+  background-color: var(--surface-highlight);
+}
+
+.theme-light .notification-close:hover {
+  background-color: #f0f1f3;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .notification-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  
+  .notification {
+    min-width: auto;
+  }
+  
+  .notification-content {
+    padding: 12px;
+  }
+  
+  .notification-actions {
+    flex-direction: column;
+  }
+  
+  .notification-action {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* 多个通知时的堆叠效果 */
+.notification:nth-child(n+2) {
+  animation: notificationSlideInStack 0.3s ease-out;
+}
+
+@keyframes notificationSlideInStack {
+  from {
+    opacity: 0;
+    transform: translateX(100%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+}
+
+/* 悬停时暂停进度条动画 */
+.notification:hover .notification-progress {
+  animation-play-state: paused;
+}

@@ -27,6 +27,12 @@ import ToolsPanel from './components/ToolsPanel';
 import SnippetPanel from './components/SnippetPanel';
 import BookmarkPanel from './components/BookmarkPanel';
 import CodeMetricsPanel from './components/CodeMetricsPanel';
+import StatusBar from './components/StatusBar';
+import Breadcrumb from './components/Breadcrumb';
+import CommandPalette from './components/CommandPalette';
+import NotificationSystem from './components/NotificationSystem';
+import QuickActions from './components/QuickActions';
+import Layout from './components/Layout';
 
 // Context & Hooks
 import { AppProvider, useApp, usePanels, useEditorSettings, useCurrentFolder } from './contexts';
@@ -37,6 +43,15 @@ import { detectLanguage } from './utils';
 import { t } from './i18n';
 
 import './App.css';
+import './components/StatusBar.css';
+import './components/Breadcrumb.css';
+import './components/CommandPalette.css';
+import './components/NotificationSystem.css';
+import './components/QuickActions.css';
+import './components/EnhancedSidebar.css';
+import './components/LoadingSpinner.css';
+import './components/SplashScreen.css';
+import './components/Layout.css';
 
 // ==================== 主应用内容 ====================
 const AppContent: React.FC = () => {
@@ -65,6 +80,20 @@ const AppContent: React.FC = () => {
     path: string;
   } | null>(null);
 
+  // Git 状态数据
+  const [gitStatus, setGitStatus] = useState<{
+    branch?: string;
+    status?: string;
+    ahead?: number;
+    behind?: number;
+  } | null>(null);
+
+  // 光标位置
+  const [cursorPosition, setCursorPosition] = useState({
+    line: 1,
+    column: 1
+  });
+
   // 初始化语言设置
   useEffect(() => {
     const loadLocale = async () => {
@@ -76,6 +105,33 @@ const AppContent: React.FC = () => {
       }
     };
     loadLocale();
+  }, []);
+
+  // 显示欢迎通知
+  useEffect(() => {
+    if (window.notificationSystem) {
+      setTimeout(() => {
+        window.notificationSystem.success(
+          '欢迎使用 AI 代码编辑器！',
+          '按 Ctrl+Shift+P 打开命令面板，体验全新功能',
+          {
+            duration: 6000,
+            actions: [
+              {
+                label: '了解新功能',
+                primary: true,
+                action: () => {
+                  window.notificationSystem.info(
+                    '新功能介绍',
+                    '✨ 状态栏：显示文件信息、Git状态、光标位置\n🧭 面包屑导航：快速导航文件路径\n⚡ 命令面板：Ctrl+Shift+P 快速执行命令\n🔔 通知系统：实时反馈操作结果\n⚡ 快速操作栏：编辑器右上角快捷按钮'
+                  );
+                }
+              }
+            ]
+          }
+        );
+      }, 1000);
+    }
   }, []);
 
   // 监听文件/文件夹打开事件
@@ -105,6 +161,44 @@ const AppContent: React.FC = () => {
     const offSave = window.electronAPI.onSaveFile(saveActiveTab);
     return () => offSave?.();
   }, [saveActiveTab]);
+
+  // 获取Git状态
+  useEffect(() => {
+    if (!currentFolder || !window.electronAPI) return;
+
+    const fetchGitStatus = async () => {
+      try {
+        const result = await window.electronAPI.executeCommand('git status --porcelain -b', currentFolder);
+        if (result.success) {
+          const lines = result.output.split('\n');
+          const branchLine = lines.find(line => line.startsWith('##'));
+          const statusLines = lines.filter(line => line && !line.startsWith('##'));
+          
+          let branch = 'main';
+          let status = statusLines.join('\n');
+          
+          if (branchLine) {
+            const match = branchLine.match(/## (.+?)(?:\.\.\..+?)?(?: \[(.+?)\])?/);
+            if (match) {
+              branch = match[1];
+              if (match[2]) {
+                status = status + ' ' + match[2];
+              }
+            }
+          }
+          
+          setGitStatus({ branch, status });
+        }
+      } catch (error) {
+        console.error('[Git] Failed to fetch status:', error);
+      }
+    };
+
+    fetchGitStatus();
+    const interval = setInterval(fetchGitStatus, 30000); // 每30秒更新一次
+
+    return () => clearInterval(interval);
+  }, [currentFolder]);
 
   // 设置保存回调
   const handleSettingsSaved = useCallback((opts: {
@@ -173,6 +267,10 @@ const AppContent: React.FC = () => {
       if (e.ctrlKey && e.key === 'p' && !e.shiftKey) {
         e.preventDefault();
         setPanel('isQuickOpenOpen', true);
+      }
+      if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+        e.preventDefault();
+        setPanel('isCommandPaletteOpen', true);
       }
       if (e.ctrlKey && e.key === 'r') {
         e.preventDefault();
@@ -303,6 +401,17 @@ const AppContent: React.FC = () => {
       {/* 主内容区 */}
       <div className="main-content">
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', position: 'relative' }}>
+          {/* 面包屑导航 */}
+          <Breadcrumb
+            filePath={activeTab?.filePath}
+            workspaceRoot={currentFolder}
+            onNavigate={(path) => {
+              // 这里可以添加导航逻辑
+              console.log('Navigate to:', path);
+            }}
+            theme={uiTheme}
+          />
+
           {!panels.isDiffViewOpen ? (
             <>
               <TabBar
@@ -312,7 +421,33 @@ const AppContent: React.FC = () => {
                 onTabClose={closeTab}
               />
               <div style={{ display: 'flex', flex: 1, overflow: 'hidden', position: 'relative' }}>
-                <div style={{ flex: panels.isMarkdownPreviewOpen && activeTab?.language === 'markdown' ? '1 1 50%' : '1', overflow: 'hidden' }}>
+                <div style={{ flex: panels.isMarkdownPreviewOpen && activeTab?.language === 'markdown' ? '1 1 50%' : '1', overflow: 'hidden', position: 'relative' }}>
+                  {/* 快速操作栏 */}
+                  <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 10 }}>
+                    <QuickActions
+                      actions={[
+                        {
+                          id: 'save',
+                          icon: '💾',
+                          title: '保存文件 (Ctrl+S)',
+                          onClick: saveActiveTab
+                        },
+                        {
+                          id: 'format',
+                          icon: '✨',
+                          title: '格式化代码 (Shift+Alt+F)',
+                          onClick: handleFormatCode
+                        },
+                        {
+                          id: 'command',
+                          icon: '⚡',
+                          title: '命令面板 (Ctrl+Shift+P)',
+                          onClick: () => setPanel('isCommandPaletteOpen', true)
+                        }
+                      ]}
+                      theme={uiTheme}
+                    />
+                  </div>
                   <Editor
                     content={fileContent}
                     onChange={setFileContent}
@@ -344,7 +479,7 @@ const AppContent: React.FC = () => {
               onClose={() => setPanel('isDiffViewOpen', false)}
             />
           )}
-          
+
           {/* 终端 */}
           {panels.isTerminalOpen && (
             <Terminal
@@ -352,6 +487,16 @@ const AppContent: React.FC = () => {
               workingDirectory={currentFolder || undefined}
             />
           )}
+
+          {/* 状态栏 */}
+          <StatusBar
+            currentFilePath={activeTab?.filePath}
+            cursorPosition={cursorPosition}
+            language={activeTab?.language}
+            gitBranch={gitStatus?.branch}
+            gitStatus={gitStatus?.status}
+            theme={uiTheme}
+          />
         </div>
       </div>
 
@@ -497,7 +642,79 @@ const AppContent: React.FC = () => {
           onClose={() => setPanel('isToolsPanelOpen', false)}
         />
       )}
-    </div>
+
+      {/* 命令面板 */}
+      <CommandPalette
+        isOpen={panels.isCommandPaletteOpen || false}
+        onClose={() => setPanel('isCommandPaletteOpen', false)}
+        commands={[
+          {
+            id: 'file.new',
+            title: '新建文件',
+            description: '创建一个新的文件',
+            icon: '📄',
+            category: '文件',
+            action: () => {
+              if (window.notificationSystem) {
+                window.notificationSystem.info('新建文件', '功能开发中...');
+              }
+            }
+          },
+          {
+            id: 'file.save',
+            title: '保存文件',
+            description: '保存当前文件',
+            icon: '💾',
+            category: '文件',
+            action: saveActiveTab
+          },
+          {
+            id: 'edit.format',
+            title: '格式化代码',
+            description: '格式化当前文件的代码',
+            icon: '✨',
+            category: '编辑',
+            action: handleFormatCode
+          },
+          {
+            id: 'view.terminal',
+            title: '切换终端',
+            description: '显示或隐藏终端',
+            icon: '⌨️',
+            category: '视图',
+            action: () => togglePanel('isTerminalOpen')
+          },
+          {
+            id: 'view.settings',
+            title: '打开设置',
+            description: '打开编辑器设置',
+            icon: '⚙️',
+            category: '视图',
+            action: () => setPanel('isSettingsOpen', true)
+          },
+          {
+            id: 'git.status',
+            title: 'Git 状态',
+            description: '查看Git状态',
+            icon: '🔀',
+            category: 'Git',
+            action: () => togglePanel('showGitPanel')
+          },
+          {
+            id: 'ai.chat',
+            title: 'AI 聊天',
+            description: '打开AI聊天面板',
+            icon: '💬',
+            category: 'AI',
+            action: () => togglePanel('isChatOpen')
+          }
+        ]}
+        theme={uiTheme}
+      />
+
+      {/* 通知系统 */}
+      <NotificationSystem theme={uiTheme} />
+      </div>
   );
 };
 
