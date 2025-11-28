@@ -24,6 +24,9 @@ import ExtensionPanel from './components/ExtensionPanel';
 import TodoPanel from './components/TodoPanel';
 import GitStashPanel from './components/GitStashPanel';
 import ToolsPanel from './components/ToolsPanel';
+import SnippetPanel from './components/SnippetPanel';
+import BookmarkPanel from './components/BookmarkPanel';
+import CodeMetricsPanel from './components/CodeMetricsPanel';
 
 // Context & Hooks
 import { AppProvider, useApp, usePanels, useEditorSettings, useCurrentFolder } from './contexts';
@@ -221,6 +224,18 @@ const AppContent: React.FC = () => {
         e.preventDefault();
         togglePanel('isToolsPanelOpen');
       }
+      if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+        e.preventDefault();
+        togglePanel('isSnippetPanelOpen');
+      }
+      if (e.ctrlKey && e.shiftKey && e.key === 'B') {
+        e.preventDefault();
+        togglePanel('isBookmarkPanelOpen');
+      }
+      if (e.ctrlKey && e.shiftKey && e.key === 'M') {
+        e.preventDefault();
+        togglePanel('isCodeMetricsPanelOpen');
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -262,6 +277,12 @@ const AppContent: React.FC = () => {
         isGitStashOpen={panels.isGitStashPanelOpen}
         onToggleTools={() => togglePanel('isToolsPanelOpen')}
         isToolsOpen={panels.isToolsPanelOpen}
+        onToggleSnippets={() => togglePanel('isSnippetPanelOpen')}
+        isSnippetsOpen={panels.isSnippetPanelOpen}
+        onToggleBookmarks={() => togglePanel('isBookmarkPanelOpen')}
+        isBookmarksOpen={panels.isBookmarkPanelOpen}
+        onToggleCodeMetrics={() => togglePanel('isCodeMetricsPanelOpen')}
+        isCodeMetricsOpen={panels.isCodeMetricsPanelOpen}
       />
 
       {/* 文件浏览器 */}
@@ -344,6 +365,41 @@ const AppContent: React.FC = () => {
           contextId={activeTab?.filePath || currentFolder || 'default'}
           language={activeTab?.language || 'plaintext'}
         />
+      )}
+      
+      {/* 代码片段面板 */}
+      {panels.isSnippetPanelOpen && (
+        <div className="side-panel">
+          <SnippetPanel
+            onInsertSnippet={(code) => {
+              if (activeTab) {
+                setFileContent(fileContent + '\n' + code);
+              }
+            }}
+          />
+        </div>
+      )}
+      
+      {/* 书签面板 */}
+      {panels.isBookmarkPanelOpen && (
+        <div className="side-panel">
+          <BookmarkPanel
+            currentFilePath={activeTab?.filePath}
+            onNavigateToBookmark={(filePath, line) => {
+              openTab(filePath);
+              // TODO: 跳转到指定行
+            }}
+          />
+        </div>
+      )}
+      
+      {/* 代码度量面板 */}
+      {panels.isCodeMetricsPanelOpen && (
+        <div className="side-panel">
+          <CodeMetricsPanel
+            workspacePath={currentFolder}
+          />
+        </div>
       )}
 
       {/* 设置模态框 */}

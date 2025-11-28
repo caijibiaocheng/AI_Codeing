@@ -22,6 +22,12 @@ interface SidebarProps {
   isGitStashOpen?: boolean;
   onToggleTools?: () => void;
   isToolsOpen?: boolean;
+  onToggleSnippets?: () => void;
+  isSnippetsOpen?: boolean;
+  onToggleBookmarks?: () => void;
+  isBookmarksOpen?: boolean;
+  onToggleCodeMetrics?: () => void;
+  isCodeMetricsOpen?: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ 
@@ -45,7 +51,13 @@ const Sidebar: React.FC<SidebarProps> = ({
   onToggleGitStash,
   isGitStashOpen = false,
   onToggleTools,
-  isToolsOpen = false
+  isToolsOpen = false,
+  onToggleSnippets,
+  isSnippetsOpen = false,
+  onToggleBookmarks,
+  isBookmarksOpen = false,
+  onToggleCodeMetrics,
+  isCodeMetricsOpen = false
 }) => {
   return (
     <div className="sidebar">
@@ -144,6 +156,36 @@ const Sidebar: React.FC<SidebarProps> = ({
           title="Developer Tools (Ctrl+Shift+U)"
         >
           🛠️
+        </div>
+      )}
+      
+      {onToggleSnippets && (
+        <div 
+          className={`sidebar-icon ${isSnippetsOpen ? 'active' : ''}`}
+          onClick={onToggleSnippets}
+          title="Code Snippets (Ctrl+Shift+P)"
+        >
+          📝
+        </div>
+      )}
+      
+      {onToggleBookmarks && (
+        <div 
+          className={`sidebar-icon ${isBookmarksOpen ? 'active' : ''}`}
+          onClick={onToggleBookmarks}
+          title="Bookmarks (Ctrl+Shift+B)"
+        >
+          🔖
+        </div>
+      )}
+      
+      {onToggleCodeMetrics && (
+        <div 
+          className={`sidebar-icon ${isCodeMetricsOpen ? 'active' : ''}`}
+          onClick={onToggleCodeMetrics}
+          title="Code Metrics (Ctrl+Shift+M)"
+        >
+          📊
         </div>
       )}
       
