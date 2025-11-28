@@ -1,0 +1,142 @@
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border);
+  padding: 0 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.breadcrumb-item.clickable {
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+.breadcrumb-item.clickable:hover {
+  background-color: var(--bg-elevated);
+  color: var(--accent);
+}
+
+.breadcrumb-item.current {
+  color: var(--text-primary);
+  font-weight: 500;
+  background-color: var(--bg-secondary);
+}
+
+.breadcrumb-separator {
+  margin: 0 4px;
+  color: var(--text-muted);
+  font-weight: bold;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.breadcrumb-actions {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.breadcrumb-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+
+.breadcrumb-action:hover {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.breadcrumb-action:active {
+  transform: scale(0.95);
+}
+
+/* 主题适配 */
+.theme-light .breadcrumb {
+  background-color: #ffffff;
+  border-bottom-color: var(--border);
+}
+
+.theme-light .breadcrumb-item.current {
+  background-color: #f3f3f3;
+}
+
+.theme-light .breadcrumb-item.clickable:hover,
+.theme-light .breadcrumb-action:hover {
+  background-color: #e8e8e8;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .breadcrumb-item {
+    max-width: 120px;
+  }
+  
+  .breadcrumb-actions {
+    gap: 2px;
+  }
+}
+
+@media (max-width: 768px) {
+  .breadcrumb {
+    padding: 0 8px;
+  }
+  
+  .breadcrumb-item {
+    max-width: 80px;
+    font-size: 11px;
+    padding: 4px 4px;
+  }
+  
+  .breadcrumb-separator {
+    margin: 0 2px;
+  }
+  
+  .breadcrumb-action {
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+  }
+}
+
+/* 动画效果 */
+.breadcrumb-item {
+  transition: all 0.15s ease;
+}
+
+.breadcrumb-action {
+  transition: all 0.15s ease;
+}
+
+/* 滚动条样式 */
+.breadcrumb::-webkit-scrollbar {
+  display: none;
+}

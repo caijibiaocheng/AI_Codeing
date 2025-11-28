@@ -7,6 +7,28 @@
 // import type { ... } from '../shared/types';
 
 declare global {
+  // ==================== 通知系统 ====================
+  interface NotificationSystem {
+    info: (title: string, message?: string, options?: Partial<Notification>) => string;
+    success: (title: string, message?: string, options?: Partial<Notification>) => string;
+    warning: (title: string, message?: string, options?: Partial<Notification>) => string;
+    error: (title: string, message?: string, options?: Partial<Notification>) => string;
+    clear: () => void;
+  }
+
+  interface Notification {
+    id: string;
+    type: 'info' | 'success' | 'warning' | 'error';
+    title: string;
+    message?: string;
+    duration?: number;
+    actions?: Array<{
+      label: string;
+      action: () => void;
+      primary?: boolean;
+    }>;
+  }
+
   // ==================== 文件系统 ====================
   interface FileSystemItem {
     name: string;
@@ -173,22 +195,6 @@ declare global {
     createdAt: number;
   }
 
-  // ==================== API 响应 ====================
-  interface ApiResponse<T = unknown> {
-    success: boolean;
-    data?: T;
-    error?: string;
-  }
-
-  interface FileResponse extends ApiResponse<string> {}
-  interface DirectoryResponse extends ApiResponse<FileSystemItem[]> {}
-  interface SearchResponse extends ApiResponse<SearchResult[]> {}
-  interface SearchInFilesResponse extends ApiResponse<SearchInFilesResult[]> {}
-  interface GitStatusResponse extends ApiResponse<GitStatus> {}
-  interface GitBranchResponse extends ApiResponse<GitBranch[]> {}
-  interface GitLogResponse extends ApiResponse<GitCommit[]> {}
-  interface ExtensionResponse extends ApiResponse<unknown[]> {}
-
   interface Window {
     electronAPI: {
       getConfig: (key: string) => Promise<string | number | boolean | undefined>;
@@ -279,6 +285,7 @@ declare global {
       extensionGetGrammars: (extensionId: string) => Promise<{ success: boolean; data?: any[]; error?: string }>;
       onExtensionNotification: (callback: (data: any) => void) => () => void;
     };
+    notificationSystem: NotificationSystem;
   }
 }
 

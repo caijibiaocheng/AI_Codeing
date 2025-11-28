@@ -1,0 +1,100 @@
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 24px;
+  background-color: var(--bg-elevated);
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 0 12px;
+  user-select: none;
+  z-index: 10;
+}
+
+.status-left,
+.status-center,
+.status-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-center {
+  flex: 1;
+  justify-content: center;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.status-item:hover {
+  background-color: var(--bg-secondary);
+}
+
+.status-item.clickable {
+  cursor: pointer;
+}
+
+.status-item.clickable:hover {
+  color: var(--text-primary);
+  background-color: var(--surface-highlight);
+}
+
+.git-status {
+  font-weight: 500;
+}
+
+.git-changes {
+  color: #ff9500;
+  font-weight: bold;
+  margin-left: 4px;
+}
+
+.status-item.time {
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-weight: 500;
+}
+
+/* 主题适配 */
+.theme-light .status-bar {
+  background-color: #f3f3f3;
+  border-top-color: var(--border);
+}
+
+.theme-light .status-item:hover {
+  background-color: #e8e8e8;
+}
+
+.theme-light .status-item.clickable:hover {
+  background-color: var(--surface-highlight);
+}
+
+/* 动画效果 */
+.status-item {
+  transition: all 0.2s ease;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .status-center {
+    display: none;
+  }
+  
+  .status-left,
+  .status-right {
+    gap: 8px;
+  }
+  
+  .status-item {
+    padding: 2px 4px;
+    font-size: 11px;
+  }
+}

@@ -1,0 +1,66 @@
+.app-layout {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease;
+}
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-content {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 确保状态栏在底部 */
+.app-main > div:last-child {
+  flex-shrink: 0;
+}
+
+/* 主题适配 */
+.theme-light .app-layout {
+  background-color: #ffffff;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .app-layout {
+    font-size: 14px;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .app-layout {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .app-content {
+    overflow: visible !important;
+  }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+  .app-layout {
+    border: 2px solid var(--text-primary);
+  }
+}
+
+/* 减少动画效果 */
+@media (prefers-reduced-motion: reduce) {
+  .app-layout {
+    transition: none;
+  }
+}
