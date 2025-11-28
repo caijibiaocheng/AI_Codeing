@@ -1,0 +1,263 @@
+.recent-files-panel {
+  width: 300px;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.recent-files-panel .panel-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-primary);
+}
+
+.recent-files-panel .panel-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+}
+
+.recent-files-panel .close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 16px;
+  line-height: 1;
+  transition: all 0.2s;
+}
+
+.recent-files-panel .close-btn:hover {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+.recent-files-panel .panel-toolbar {
+  padding: 8px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  gap: 8px;
+  background: var(--bg-primary);
+}
+
+.recent-files-panel .filter-input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.recent-files-panel .filter-input:focus {
+  border-color: var(--accent-color);
+}
+
+.recent-files-panel .clear-btn {
+  padding: 6px 10px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.recent-files-panel .clear-btn:hover {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+  border-color: var(--accent-color);
+}
+
+.recent-files-panel .panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.recent-files-panel .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.recent-files-panel .empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.recent-files-panel .empty-state p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.recent-files-panel .recent-files-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.recent-files-panel .recent-file-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  position: relative;
+}
+
+.recent-files-panel .recent-file-item:hover {
+  background: var(--hover-bg);
+  border-color: var(--border-color);
+}
+
+.recent-files-panel .recent-file-item.active {
+  background: var(--accent-bg);
+  border-color: var(--accent-color);
+}
+
+.recent-files-panel .file-icon {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.recent-files-panel .file-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.recent-files-panel .file-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recent-files-panel .file-path {
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'Consolas', 'Monaco', monospace;
+}
+
+.recent-files-panel .file-time {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.recent-files-panel .remove-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 12px;
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+.recent-files-panel .recent-file-item:hover .remove-btn {
+  opacity: 1;
+}
+
+.recent-files-panel .remove-btn:hover {
+  background: var(--error-bg);
+  color: var(--error-color);
+}
+
+.recent-files-panel .panel-footer {
+  padding: 8px 16px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-primary);
+}
+
+.recent-files-panel .info-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* 深色主题优化 */
+.theme-dark .recent-files-panel {
+  --bg-primary: #1e1e1e;
+  --bg-secondary: #252526;
+  --text-primary: #cccccc;
+  --text-secondary: #858585;
+  --text-tertiary: #6a6a6a;
+  --border-color: #3e3e3e;
+  --hover-bg: #2a2a2a;
+  --accent-color: #007acc;
+  --accent-bg: rgba(0, 122, 204, 0.1);
+  --error-color: #f48771;
+  --error-bg: rgba(244, 135, 113, 0.1);
+}
+
+/* 浅色主题优化 */
+.theme-light .recent-files-panel {
+  --bg-primary: #f3f3f3;
+  --bg-secondary: #ffffff;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --border-color: #e0e0e0;
+  --hover-bg: #f0f0f0;
+  --accent-color: #0066cc;
+  --accent-bg: rgba(0, 102, 204, 0.1);
+  --error-color: #d32f2f;
+  --error-bg: rgba(211, 47, 47, 0.1);
+}
+
+/* 滚动条样式 */
+.recent-files-panel .panel-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.recent-files-panel .panel-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.recent-files-panel .panel-content::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+.recent-files-panel .panel-content::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}

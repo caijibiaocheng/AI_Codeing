@@ -28,6 +28,12 @@ interface SidebarProps {
   isBookmarksOpen?: boolean;
   onToggleCodeMetrics?: () => void;
   isCodeMetricsOpen?: boolean;
+  onToggleRecentFiles?: () => void;
+  isRecentFilesOpen?: boolean;
+  onToggleOutline?: () => void;
+  isOutlineOpen?: boolean;
+  onToggleProblems?: () => void;
+  isProblemsOpen?: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ 
@@ -57,7 +63,13 @@ const Sidebar: React.FC<SidebarProps> = ({
   onToggleBookmarks,
   isBookmarksOpen = false,
   onToggleCodeMetrics,
-  isCodeMetricsOpen = false
+  isCodeMetricsOpen = false,
+  onToggleRecentFiles,
+  isRecentFilesOpen = false,
+  onToggleOutline,
+  isOutlineOpen = false,
+  onToggleProblems,
+  isProblemsOpen = false
 }) => {
   return (
     <div className="sidebar">
@@ -186,6 +198,36 @@ const Sidebar: React.FC<SidebarProps> = ({
           title="Code Metrics (Ctrl+Shift+M)"
         >
           📊
+        </div>
+      )}
+      
+      {onToggleRecentFiles && (
+        <div 
+          className={`sidebar-icon ${isRecentFilesOpen ? 'active' : ''}`}
+          onClick={onToggleRecentFiles}
+          title="Recent Files (Ctrl+Shift+R)"
+        >
+          🕒
+        </div>
+      )}
+      
+      {onToggleOutline && (
+        <div 
+          className={`sidebar-icon ${isOutlineOpen ? 'active' : ''}`}
+          onClick={onToggleOutline}
+          title="Outline (Ctrl+Shift+O)"
+        >
+          🗂️
+        </div>
+      )}
+      
+      {onToggleProblems && (
+        <div 
+          className={`sidebar-icon ${isProblemsOpen ? 'active' : ''}`}
+          onClick={onToggleProblems}
+          title="Problems (Ctrl+Shift+D)"
+        >
+          🐛
         </div>
       )}
       

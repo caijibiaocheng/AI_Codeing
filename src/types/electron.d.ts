@@ -195,6 +195,26 @@ declare global {
     createdAt: number;
   }
 
+  // ==================== Recent Files ====================
+  interface RecentFile {
+    path: string;
+    name: string;
+    timestamp: number;
+    language?: string;
+  }
+
+  // ==================== Problems/Diagnostics ====================
+  interface Problem {
+    id: string;
+    severity: 'error' | 'warning' | 'info';
+    message: string;
+    file: string;
+    line: number;
+    column: number;
+    source?: string;
+    code?: string;
+  }
+
   interface Window {
     electronAPI: {
       getConfig: (key: string) => Promise<string | number | boolean | undefined>;
@@ -284,6 +304,14 @@ declare global {
       extensionGetLanguages: (extensionId: string) => Promise<{ success: boolean; data?: any[]; error?: string }>;
       extensionGetGrammars: (extensionId: string) => Promise<{ success: boolean; data?: any[]; error?: string }>;
       onExtensionNotification: (callback: (data: any) => void) => () => void;
+      // Recent Files
+      getRecentFiles?: () => Promise<RecentFile[]>;
+      addRecentFile?: (filePath: string) => Promise<void>;
+      removeRecentFile?: (filePath: string) => Promise<void>;
+      clearRecentFiles?: () => Promise<void>;
+      // Problems Panel
+      getProblems?: () => Promise<{ success: boolean; problems?: Problem[]; error?: string }>;
+      onProblemsUpdated?: (callback: (problems: Problem[]) => void) => () => void;
     };
     notificationSystem: NotificationSystem;
   }

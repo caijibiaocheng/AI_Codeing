@@ -143,6 +143,33 @@ const defaultCommands: Command[] = [
     category: '帮助',
     keywords: ['about', '关于'],
     action: () => console.log('关于')
+  },
+  {
+    id: 'view.recentFiles',
+    title: '最近文件',
+    description: '显示最近打开的文件 (Ctrl+Shift+R)',
+    icon: '🕒',
+    category: '视图',
+    keywords: ['recent', 'files', '最近', '文件'],
+    action: () => console.log('最近文件')
+  },
+  {
+    id: 'view.outline',
+    title: '大纲',
+    description: '显示当前文件的结构大纲 (Ctrl+Shift+O)',
+    icon: '🗂️',
+    category: '视图',
+    keywords: ['outline', 'symbols', '大纲', '符号'],
+    action: () => console.log('大纲')
+  },
+  {
+    id: 'view.problems',
+    title: '问题',
+    description: '显示代码问题和诊断 (Ctrl+Shift+D)',
+    icon: '🐛',
+    category: '视图',
+    keywords: ['problems', 'errors', 'diagnostics', '问题', '错误'],
+    action: () => console.log('问题')
   }
 ];
 
