@@ -98,6 +98,15 @@
   flex-direction: column;
 }
 
+.side-panel {
+  width: 450px;
+  background-color: var(--bg-secondary);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .chat-header {
   height: 44px;
   background-color: var(--bg-elevated);

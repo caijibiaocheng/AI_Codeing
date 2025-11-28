@@ -29,6 +29,9 @@ export interface PanelState {
   isTodoPanelOpen: boolean;
   isGitStashPanelOpen: boolean;
   isToolsPanelOpen: boolean;
+  isSnippetPanelOpen: boolean;
+  isBookmarkPanelOpen: boolean;
+  isCodeMetricsPanelOpen: boolean;
 }
 
 // Context 值类型
@@ -75,6 +78,9 @@ const defaultPanelState: PanelState = {
   isTodoPanelOpen: false,
   isGitStashPanelOpen: false,
   isToolsPanelOpen: false,
+  isSnippetPanelOpen: false,
+  isBookmarkPanelOpen: false,
+  isCodeMetricsPanelOpen: false,
 };
 
 // 创建 Context

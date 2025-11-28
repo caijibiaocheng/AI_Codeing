@@ -1,0 +1,258 @@
+.bookmark-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg-secondary, #1e1e1e);
+  color: var(--text-primary, #d4d4d4);
+}
+
+.bookmark-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color, #3c3c3c);
+}
+
+.bookmark-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.bookmark-header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-filter {
+  padding: 4px 12px;
+  background: transparent;
+  border: 1px solid var(--border-color, #3c3c3c);
+  border-radius: 4px;
+  color: var(--text-secondary, #969696);
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.btn-filter:hover:not(:disabled) {
+  background: var(--hover-bg, #2a2d2e);
+  color: var(--text-primary, #d4d4d4);
+}
+
+.btn-filter.active {
+  background: var(--accent-color, #007acc);
+  border-color: var(--accent-color, #007acc);
+  color: white;
+}
+
+.btn-filter:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bookmark-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-secondary, #969696);
+}
+
+.empty-state .hint {
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.bookmark-groups {
+  padding: 8px 0;
+}
+
+.bookmark-group {
+  margin-bottom: 16px;
+}
+
+.bookmark-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--bg-tertiary, #252526);
+  border-bottom: 1px solid var(--border-color, #3c3c3c);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.file-icon {
+  font-size: 14px;
+}
+
+.file-name {
+  font-weight: 600;
+  color: var(--text-primary, #d4d4d4);
+}
+
+.file-path {
+  font-size: 11px;
+  color: var(--text-secondary, #969696);
+  margin-left: auto;
+}
+
+.bookmark-group-items {
+  background: var(--bg-secondary, #1e1e1e);
+}
+
+.bookmark-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px 10px 40px;
+  border-bottom: 1px solid var(--border-color, #3c3c3c);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.bookmark-item:hover {
+  background: var(--hover-bg, #2a2d2e);
+}
+
+.bookmark-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.bookmark-line {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-color, #007acc);
+}
+
+.bookmark-label {
+  font-size: 13px;
+  color: var(--text-primary, #d4d4d4);
+}
+
+.btn-delete {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary, #969696);
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  border-radius: 4px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-delete:hover {
+  background: #c5302e;
+  color: white;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: opacity 0.2s;
+}
+
+.btn-primary {
+  background: var(--accent-color, #007acc);
+  color: white;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: var(--bg-tertiary, #3c3c3c);
+  color: var(--text-primary, #d4d4d4);
+}
+
+.btn-primary:hover:not(:disabled), .btn-secondary:hover {
+  opacity: 0.8;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--bg-secondary, #1e1e1e);
+  border: 1px solid var(--border-color, #3c3c3c);
+  border-radius: 8px;
+  padding: 24px;
+  width: 90%;
+  max-width: 500px;
+}
+
+.modal-content h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+}
+
+.modal-file-info {
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background: var(--bg-tertiary, #252526);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--text-secondary, #969696);
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg-tertiary, #252526);
+  border: 1px solid var(--border-color, #3c3c3c);
+  border-radius: 4px;
+  color: var(--text-primary, #d4d4d4);
+  font-size: 14px;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--accent-color, #007acc);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}

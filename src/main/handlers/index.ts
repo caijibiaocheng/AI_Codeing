@@ -6,3 +6,5 @@ export { registerGitHandlers } from './gitHandlers';
 export { registerAIHandlers } from './aiHandlers';
 export { registerWorkspaceHandlers } from './workspaceHandlers';
 export { registerExtensionHandlers } from './extensionHandlers';
+export { registerProjectManagementHandlers } from './projectManagementHandlers';
+export { registerAIAssistantHandlers } from './aiAssistantHandlers';
