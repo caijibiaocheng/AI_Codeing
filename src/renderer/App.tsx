@@ -33,6 +33,9 @@ import CommandPalette from './components/CommandPalette';
 import NotificationSystem from './components/NotificationSystem';
 import QuickActions from './components/QuickActions';
 import Layout from './components/Layout';
+import RecentFilesPanel from './components/RecentFilesPanel';
+import OutlinePanel from './components/OutlinePanel';
+import ProblemsPanel from './components/ProblemsPanel';
 
 // Context & Hooks
 import { AppProvider, useApp, usePanels, useEditorSettings, useCurrentFolder } from './contexts';
@@ -52,6 +55,9 @@ import './components/EnhancedSidebar.css';
 import './components/LoadingSpinner.css';
 import './components/SplashScreen.css';
 import './components/Layout.css';
+import './components/RecentFilesPanel.css';
+import './components/OutlinePanel.css';
+import './components/ProblemsPanel.css';
 
 // ==================== 主应用内容 ====================
 const AppContent: React.FC = () => {
@@ -334,6 +340,18 @@ const AppContent: React.FC = () => {
         e.preventDefault();
         togglePanel('isCodeMetricsPanelOpen');
       }
+      if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+        e.preventDefault();
+        togglePanel('isRecentFilesPanelOpen');
+      }
+      if (e.ctrlKey && e.shiftKey && e.key === 'O') {
+        e.preventDefault();
+        togglePanel('isOutlinePanelOpen');
+      }
+      if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+        e.preventDefault();
+        togglePanel('isProblemsPanelOpen');
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -381,6 +399,12 @@ const AppContent: React.FC = () => {
         isBookmarksOpen={panels.isBookmarkPanelOpen}
         onToggleCodeMetrics={() => togglePanel('isCodeMetricsPanelOpen')}
         isCodeMetricsOpen={panels.isCodeMetricsPanelOpen}
+        onToggleRecentFiles={() => togglePanel('isRecentFilesPanelOpen')}
+        isRecentFilesOpen={panels.isRecentFilesPanelOpen}
+        onToggleOutline={() => togglePanel('isOutlinePanelOpen')}
+        isOutlineOpen={panels.isOutlinePanelOpen}
+        onToggleProblems={() => togglePanel('isProblemsPanelOpen')}
+        isProblemsOpen={panels.isProblemsPanelOpen}
       />
 
       {/* 文件浏览器 */}
@@ -545,6 +569,45 @@ const AppContent: React.FC = () => {
             workspacePath={currentFolder}
           />
         </div>
+      )}
+      
+      {/* 最近文件面板 */}
+      {panels.isRecentFilesPanelOpen && (
+        <RecentFilesPanel
+          onClose={() => setPanel('isRecentFilesPanelOpen', false)}
+          onFileSelect={openTab}
+          currentFile={activeTab?.filePath}
+        />
+      )}
+      
+      {/* 大纲面板 */}
+      {panels.isOutlinePanelOpen && (
+        <OutlinePanel
+          onClose={() => setPanel('isOutlinePanelOpen', false)}
+          filePath={activeTab?.filePath}
+          fileContent={fileContent}
+          language={activeTab?.language}
+          onNavigate={(line, column) => {
+            // TODO: 实现跳转到指定行列
+            console.log(`Navigate to line ${line}, column ${column}`);
+            if (window.notificationSystem) {
+              window.notificationSystem.info('跳转', `第 ${line} 行，第 ${column} 列`);
+            }
+          }}
+        />
+      )}
+      
+      {/* 问题面板 */}
+      {panels.isProblemsPanelOpen && (
+        <ProblemsPanel
+          onClose={() => setPanel('isProblemsPanelOpen', false)}
+          onProblemClick={(problem) => {
+            openTab(problem.file);
+            // TODO: 跳转到问题所在行
+            console.log(`Navigate to ${problem.file}:${problem.line}:${problem.column}`);
+          }}
+          currentFile={activeTab?.filePath}
+        />
       )}
 
       {/* 设置模态框 */}
