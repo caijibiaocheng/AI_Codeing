@@ -54,9 +54,15 @@ let vscodeAPI: VSCodeAPIShim;
 let projectManagementService: ProjectManagementService;
 
 // ==================== 菜单 ====================
+
+/**
+ * 创建应用菜单
+ * 根据应用的语言设置动态生成菜单项
+ */
 function createMenu() {
-  const locale = store.get('app.locale', 'zh-CN') as string;
-  const isZhCN = locale === 'zh-CN';
+  try {
+    const locale = store.get('app.locale', 'zh-CN') as string;
+    const isZhCN = locale === 'zh-CN';
   
   const template: Electron.MenuItemConstructorOptions[] = [
     {
@@ -156,109 +162,206 @@ function createMenu() {
     }
   ];
 
-  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+    Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+  } catch (error: any) {
+    console.error('[Main] Error creating menu:', error);
+  }
 }
 
 // ==================== 窗口 ====================
+
+/**
+ * 创建应用主窗口
+ */
 function createWindow() {
-  const locale = store.get('app.locale', 'zh-CN') as string;
-  const windowTitle = locale === 'zh-CN' ? 'AI 代码编辑器' : 'AI Code Editor';
-  
-  mainWindow = new BrowserWindow({
-    width: 1400,
-    height: 900,
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js')
-    },
-    title: windowTitle,
-    icon: path.join(__dirname, '../../assets/icon.png')
-  });
+  try {
+    const locale = store.get('app.locale', 'zh-CN') as string;
+    const windowTitle = locale === 'zh-CN' ? 'AI 代码编辑器' : 'AI Code Editor';
+    
+    mainWindow = new BrowserWindow({
+      width: 1400,
+      height: 900,
+      webPreferences: {
+        nodeIntegration: false,
+        contextIsolation: true,
+        preload: path.join(__dirname, 'preload.js'),
+        sandbox: true
+      },
+      title: windowTitle,
+      icon: path.join(__dirname, '../../assets/icon.png')
+    });
 
-  createMenu();
-  
-  if (vscodeAPI) {
-    vscodeAPI.setMainWindow(mainWindow);
+    console.log('[Main] BrowserWindow created');
+    
+    createMenu();
+    
+    if (vscodeAPI) {
+      vscodeAPI.setMainWindow(mainWindow);
+    }
+
+    // 监听渲染进程的控制台消息
+    mainWindow.webContents.on('console-message', (_event, level, message, line, sourceId) => {
+      try {
+        console.log(`[Renderer][Level: ${level}] ${message} (${sourceId}:${line})`);
+      } catch (error: any) {
+        console.error('[Main] Error logging renderer message:', error);
+      }
+    });
+
+    // 加载应用内容
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[Main] Loading development server at http://localhost:3000');
+      mainWindow.loadURL('http://localhost:3000');
+      mainWindow.webContents.openDevTools();
+    } else {
+      const indexPath = path.join(__dirname, '../renderer/index.html');
+      console.log('[Main] Loading production file:', indexPath);
+      mainWindow.loadFile(indexPath);
+    }
+
+    // 监听窗口关闭
+    mainWindow.on('closed', () => {
+      console.log('[Main] Main window closed');
+      mainWindow = null;
+    });
+
+    // 监听加载完成
+    mainWindow.webContents.on('did-finish-load', () => {
+      console.log('[Main] Window content loaded successfully');
+    });
+
+    // 监听加载失败
+    mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+      console.error(`[Main] Failed to load window: ${errorDescription} (${errorCode})`);
+    });
+  } catch (error: any) {
+    console.error('[Main] Error creating window:', error);
+    throw error;
   }
+}
 
-  // 调试日志
-  mainWindow.webContents.on('console-message', (_event, level, message, line, sourceId) => {
+/**
+ * 初始化所有业务服务
+ * 在应用准备就绪时调用
+ */
+function initializeServices() {
+  try {
+    aiService = new AIService(store);
+    mcpService = new MCPService(store);
+    memoryService = new MemoryService(store);
+    completionService = new AICompletionService(store);
+    aiAssistantService = new AIAssistantService(aiService, store);
+    formatterService = new FormatterService();
+    gitService = new GitService();
+    workspaceService = new WorkspaceService(store);
+    extensionService = new ExtensionService(store);
+    vscodeAPI = new VSCodeAPIShim(null);
+    
+    // Project Management Service - 使用app.getPath('userData')作为数据目录
+    const dataDir = path.join(app.getPath('userData'), 'project-data');
+    projectManagementService = new ProjectManagementService(dataDir);
+    
+    console.log('[Main] All services initialized successfully');
+  } catch (error: any) {
+    console.error('[Main] Failed to initialize services:', error);
+    throw error;
+  }
+}
+
+/**
+ * 注册核心 IPC 处理器
+ * 包括配置、MCP、代码格式化、命令执行等
+ */
+function registerCoreHandlers() {
+  // ========== 配置管理 ==========
+  ipcMain.handle('get-config', (_, key: string) => {
     try {
-      console.log(`[Renderer][${level}] ${message} (${sourceId}:${line})`);
-    } catch {
-      // Ignore EPIPE errors
+      return store.get(key);
+    } catch (error: any) {
+      console.error(`[IPC] Error getting config for key: ${key}`, error);
+      throw error;
     }
   });
-
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.loadURL('http://localhost:3000');
-    mainWindow.webContents.openDevTools();
-  } else {
-    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
-  }
-
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
-}
-
-// ==================== 初始化 ====================
-function initializeServices() {
-  aiService = new AIService(store);
-  mcpService = new MCPService(store);
-  memoryService = new MemoryService(store);
-  completionService = new AICompletionService(store);
-  aiAssistantService = new AIAssistantService(aiService, store);
-  formatterService = new FormatterService();
-  gitService = new GitService();
-  workspaceService = new WorkspaceService(store);
-  extensionService = new ExtensionService(store);
-  vscodeAPI = new VSCodeAPIShim(null);
-  
-  // Project Management Service - 使用app.getPath('userData')作为数据目录
-  const dataDir = path.join(app.getPath('userData'), 'project-data');
-  projectManagementService = new ProjectManagementService(dataDir);
-}
-
-function registerCoreHandlers() {
-  // 配置
-  ipcMain.handle('get-config', (_, key: string) => store.get(key));
   
   ipcMain.handle('set-config', (_, key: string, value: unknown) => {
-    store.set(key, value);
-    if (aiService && key.startsWith('ai.')) {
-      aiService.updateConfig();
+    try {
+      store.set(key, value);
+      if (aiService && key.startsWith('ai.')) {
+        aiService.updateConfig();
+      }
+      return true;
+    } catch (error: any) {
+      console.error(`[IPC] Error setting config for key: ${key}`, error);
+      throw error;
     }
-    return true;
   });
 
-  // MCP
-  ipcMain.handle('mcp-list-servers', () => mcpService.listServers());
-  ipcMain.handle('mcp-add-server', (_, config) => mcpService.addServer(config));
-  ipcMain.handle('mcp-remove-server', (_, serverId: string) => mcpService.removeServer(serverId));
-  ipcMain.handle('mcp-call-tool', (_, serverId: string, toolName: string, params) => 
-    mcpService.callTool(serverId, toolName, params));
+  // ========== MCP 服务器管理 ==========
+  ipcMain.handle('mcp-list-servers', async () => {
+    try {
+      return await mcpService.listServers();
+    } catch (error: any) {
+      console.error('[IPC] Error listing MCP servers', error);
+      throw error;
+    }
+  });
 
-  // 代码格式化
+  ipcMain.handle('mcp-add-server', async (_, config) => {
+    try {
+      return await mcpService.addServer(config);
+    } catch (error: any) {
+      console.error('[IPC] Error adding MCP server', error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle('mcp-remove-server', async (_, serverId: string) => {
+    try {
+      return await mcpService.removeServer(serverId);
+    } catch (error: any) {
+      console.error(`[IPC] Error removing MCP server: ${serverId}`, error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle('mcp-call-tool', async (_, serverId: string, toolName: string, params) => {
+    try {
+      return await mcpService.callTool(serverId, toolName, params);
+    } catch (error: any) {
+      console.error(`[IPC] Error calling MCP tool: ${toolName}`, error);
+      throw error;
+    }
+  });
+
+  // ========== 代码格式化 ==========
   ipcMain.handle('format-code', async (_, code: string, filePath: string) => {
     try {
+      if (!code || typeof code !== 'string') {
+        return { success: false, error: 'Invalid code input' };
+      }
       return await formatterService.formatCode(code, filePath);
     } catch (error: any) {
+      console.error('[IPC] Error formatting code', error);
       return { success: false, error: error.message };
     }
   });
 
-  ipcMain.handle('is-format-supported', (_, filePath: string) => 
-    formatterService.isSupported(filePath));
+  ipcMain.handle('is-format-supported', (_, filePath: string) => {
+    try {
+      return formatterService.isSupported(filePath);
+    } catch (error: any) {
+      console.error(`[IPC] Error checking format support for: ${filePath}`, error);
+      return false;
+    }
+  });
 
-  // 命令执行
+  // ========== 命令执行 ==========
   ipcMain.handle('execute-command', async (_, command: string, cwd?: string) => {
     if (!command || typeof command !== 'string' || command.length > 1000) {
       return { success: false, error: 'Invalid command' };
     }
 
-    // 安全检查
+    // 安全检查：防止危险命令执行
     for (const pattern of DANGEROUS_COMMAND_PATTERNS) {
       if (pattern.test(command)) {
         console.warn(`[Security] Blocked dangerous command: ${command}`);
@@ -280,64 +383,123 @@ function registerCoreHandlers() {
             : Buffer.concat([stdout || Buffer.from(''), stderr || Buffer.from('')]).toString('utf8');
           
           if (error) {
+            console.warn(`[Command] Execution failed: ${command}`, error.message);
             resolve({ success: false, error: error.message, output: output.trim() });
           } else {
             resolve({ success: true, output: output.trim() });
           }
         } catch (decodeError: any) {
+          console.error('[Command] Encoding error', decodeError);
           resolve({ success: false, error: `Encoding error: ${decodeError.message}` });
         }
       });
       
       setTimeout(() => {
         childProcess.kill();
+        console.warn(`[Command] Timeout for command: ${command}`);
         resolve({ success: false, error: 'Command timeout (5 minutes)' });
       }, COMMAND_TIMEOUT);
     });
   });
 
-  // 剪贴板
-  ipcMain.on('copy-to-clipboard', (_, text: string) => clipboard.writeText(text));
+  // ========== 剪贴板 ==========
+  ipcMain.on('copy-to-clipboard', (_, text: string) => {
+    try {
+      clipboard.writeText(text);
+    } catch (error: any) {
+      console.error('[IPC] Error copying to clipboard', error);
+    }
+  });
 
-  // 语言更新
+  // ========== 应用语言更新 ==========
   ipcMain.on('update-app-language', (_, locale: string) => {
-    if (!mainWindow) return;
-    mainWindow.setTitle(locale === 'zh-CN' ? 'AI 代码编辑器' : 'AI Code Editor');
-    createMenu();
+    try {
+      if (!mainWindow) return;
+      mainWindow.setTitle(locale === 'zh-CN' ? 'AI 代码编辑器' : 'AI Code Editor');
+      createMenu();
+    } catch (error: any) {
+      console.error('[IPC] Error updating app language', error);
+    }
   });
 }
 
+/**
+ * 注册所有 IPC 处理器
+ * 包括核心处理器和各个功能模块的处理器
+ */
 function registerAllHandlers() {
-  registerCoreHandlers();
-  registerFileHandlers(store);
-  registerGitHandlers(gitService);
-  registerAIHandlers(aiService, completionService, memoryService);
-  registerAIAssistantHandlers(aiAssistantService);
-  registerProjectManagementHandlers(projectManagementService);
-  registerWorkspaceHandlers(workspaceService);
-  registerExtensionHandlers(extensionService, () => mainWindow);
+  try {
+    registerCoreHandlers();
+    registerFileHandlers(store);
+    registerGitHandlers(gitService);
+    registerAIHandlers(aiService, completionService, memoryService);
+    registerAIAssistantHandlers(aiAssistantService);
+    registerProjectManagementHandlers(projectManagementService);
+    registerWorkspaceHandlers(workspaceService);
+    registerExtensionHandlers(extensionService, () => mainWindow);
+    
+    console.log('[Main] All IPC handlers registered successfully');
+  } catch (error: any) {
+    console.error('[Main] Failed to register IPC handlers:', error);
+    throw error;
+  }
 }
 
 // ==================== 应用生命周期 ====================
-app.whenReady().then(() => {
-  initializeServices();
-  registerAllHandlers();
-  createWindow();
 
+/**
+ * 应用准备就绪时的初始化
+ */
+app.whenReady().then(() => {
+  console.log('[Main] App is ready, initializing...');
+  try {
+    initializeServices();
+    registerAllHandlers();
+    createWindow();
+    console.log('[Main] Application started successfully');
+  } catch (error: any) {
+    console.error('[Main] Failed to start application:', error);
+    app.quit();
+  }
+
+  /**
+   * macOS 特定：当点击 dock 图标且没有窗口打开时，重新创建窗口
+   */
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     }
   });
+}).catch((error: any) => {
+  console.error('[Main] App ready error:', error);
+  process.exit(1);
 });
 
+/**
+ * 当所有窗口关闭时
+ * 在 macOS 上，应用通常保持活跃直到用户明确退出
+ */
 app.on('window-all-closed', () => {
-  mcpService?.shutdown();
+  console.log('[Main] All windows closed');
+  try {
+    mcpService?.shutdown();
+  } catch (error: any) {
+    console.error('[Main] Error shutting down MCP service:', error);
+  }
+  
   if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
+/**
+ * 应用即将退出
+ */
 app.on('before-quit', () => {
-  mcpService?.shutdown();
+  console.log('[Main] Application quitting');
+  try {
+    mcpService?.shutdown();
+  } catch (error: any) {
+    console.error('[Main] Error during shutdown:', error);
+  }
 });
