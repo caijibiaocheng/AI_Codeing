@@ -521,5 +521,102 @@ contextBridge.exposeInMainWorld('electronAPI', {
     const listener = (_: unknown, data: any) => callback(data);
     ipcRenderer.on('extension-notification', listener);
     return () => ipcRenderer.removeListener('extension-notification', listener);
-  }
+  },
+
+  // ==================== 项目模板管理 ====================
+  /**
+   * 获取项目模板列表
+   */
+  getProjectTemplates: () => ipcRenderer.invoke('getProjectTemplates'),
+
+  /**
+   * 从模板创建项目
+   */
+  createProjectFromTemplate: (projectPath: string, projectName: string, files: any[], dependencies?: Record<string, string>, scripts?: Record<string, string>) =>
+    ipcRenderer.invoke('createProjectFromTemplate', projectPath, projectName, files, dependencies, scripts),
+
+  /**
+   * 保存自定义模板
+   */
+  saveProjectTemplate: (template: any) => ipcRenderer.invoke('saveProjectTemplate', template),
+
+  // ==================== 快捷键管理 ====================
+  /**
+   * 获取用户自定义快捷键
+   */
+  getKeyBindings: () => ipcRenderer.invoke('getKeyBindings'),
+
+  /**
+   * 保存快捷键
+   */
+  saveKeyBinding: (bindingId: string, keybinding: string) => ipcRenderer.invoke('saveKeyBinding', bindingId, keybinding),
+
+  /**
+   * 重置快捷键到默认
+   */
+  resetKeyBinding: (bindingId: string) => ipcRenderer.invoke('resetKeyBinding', bindingId),
+
+  /**
+   * 导出快捷键配置
+   */
+  exportKeyBindings: (keybindings: any[]) => ipcRenderer.invoke('exportKeyBindings', keybindings),
+
+  /**
+   * 导入快捷键配置
+   */
+  importKeyBindings: () => ipcRenderer.invoke('importKeyBindings'),
+
+  // ==================== 环境变量管理 ====================
+  /**
+   * 获取环境列表
+   */
+  getEnvironments: () => ipcRenderer.invoke('getEnvironments'),
+
+  /**
+   * 保存环境
+   */
+  saveEnvironment: (environment: any) => ipcRenderer.invoke('saveEnvironment', environment),
+
+  /**
+   * 添加环境变量
+   */
+  addEnvironmentVariable: (environmentId: string, variable: any) => ipcRenderer.invoke('addEnvironmentVariable', environmentId, variable),
+
+  /**
+   * 更新环境变量
+   */
+  updateEnvironmentVariable: (environmentId: string, variableId: string, updates: any) =>
+    ipcRenderer.invoke('updateEnvironmentVariable', environmentId, variableId, updates),
+
+  /**
+   * 删除环境变量
+   */
+  deleteEnvironmentVariable: (environmentId: string, variableId: string) =>
+    ipcRenderer.invoke('deleteEnvironmentVariable', environmentId, variableId),
+
+  /**
+   * 切换环境
+   */
+  switchEnvironment: (environmentId: string) => ipcRenderer.invoke('switchEnvironment', environmentId),
+
+  /**
+   * 导出环境
+   */
+  exportEnvironment: (environmentId: string) => ipcRenderer.invoke('exportEnvironment', environmentId),
+
+  /**
+   * 导入环境
+   */
+  importEnvironment: () => ipcRenderer.invoke('importEnvironment'),
+
+  // ==================== 对话框操作 ====================
+  /**
+   * 显示打开文件对话框
+   */
+  showOpenDialog: (options?: any) => ipcRenderer.invoke('show-open-dialog', options),
+
+  /**
+   * 显示保存文件对话框
+   */
+  showSaveDialog: (options?: any) => ipcRenderer.invoke('show-save-dialog', options)
 });

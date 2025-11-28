@@ -1,0 +1,407 @@
+/* 环境变量管理器样式 */
+.environments-section,
+.variables-section {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.variables-section {
+  border-bottom: none;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-header h3 {
+  margin: 0;
+  color: var(--text-color-primary);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.add-button {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-button:hover {
+  background: var(--accent-color-hover);
+}
+
+.environments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.environment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--background-color-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.environment-item:hover {
+  border-color: var(--accent-color);
+  background: var(--background-color-hover);
+}
+
+.environment-item.selected {
+  border-color: var(--accent-color);
+  background: var(--accent-color-transparent);
+}
+
+.environment-item.active {
+  border-color: var(--success-color);
+}
+
+.environment-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.environment-name {
+  font-weight: 600;
+  color: var(--text-color-primary);
+  margin-bottom: 4px;
+}
+
+.environment-description {
+  font-size: 12px;
+  color: var(--text-color-secondary);
+}
+
+.environment-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.active-badge {
+  background: var(--success-color);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.switch-button {
+  background: var(--background-color-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-color-primary);
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.switch-button:hover {
+  background: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
+.variables-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.variable-item {
+  background: var(--background-color-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 16px;
+  transition: border-color 0.2s ease;
+}
+
+.variable-item:hover {
+  border-color: var(--border-color-hover);
+}
+
+.variable-info {
+  margin-bottom: 12px;
+}
+
+.variable-key {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-weight: 600;
+  color: var(--accent-color);
+  margin-bottom: 4px;
+}
+
+.variable-description {
+  font-size: 12px;
+  color: var(--text-color-secondary);
+  margin-bottom: 4px;
+}
+
+.variable-type {
+  display: inline-block;
+  background: var(--background-color-tertiary);
+  color: var(--text-color-tertiary);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.variable-value-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.variable-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.value-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--background-color-primary);
+  color: var(--text-color-primary);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 13px;
+}
+
+.value-input:disabled {
+  background: var(--background-color-tertiary);
+  color: var(--text-color-tertiary);
+}
+
+.reveal-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.reveal-button:hover {
+  background: var(--background-color-hover);
+}
+
+.variable-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.variable-actions button {
+  padding: 4px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.edit-button {
+  background: var(--background-color-primary);
+  color: var(--text-color-primary);
+}
+
+.edit-button:hover {
+  background: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
+.save-button {
+  background: var(--success-color);
+  color: white;
+  border-color: var(--success-color);
+}
+
+.save-button:hover:not(:disabled) {
+  background: var(--success-color-hover);
+}
+
+.save-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cancel-button {
+  background: var(--background-color-tertiary);
+  color: var(--text-color-primary);
+}
+
+.cancel-button:hover {
+  background: var(--warning-color);
+  color: white;
+  border-color: var(--warning-color);
+}
+
+.delete-button {
+  background: var(--background-color-tertiary);
+  color: var(--text-color-primary);
+}
+
+.delete-button:hover {
+  background: var(--error-color);
+  color: white;
+  border-color: var(--error-color);
+}
+
+/* 表单样式 */
+.create-environment-form,
+.create-variable-form {
+  background: var(--background-color-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--background-color-primary);
+  color: var(--text-color-primary);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.2);
+}
+
+.form-options {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.form-options label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-color-primary);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.form-options input[type="checkbox"] {
+  margin: 0;
+}
+
+.type-select {
+  padding: 4px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--background-color-primary);
+  color: var(--text-color-primary);
+  font-size: 14px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.form-actions button {
+  padding: 8px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .environments-section,
+  .variables-section {
+    padding: 12px;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .environment-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .environment-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .variable-value {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .variable-actions {
+    flex-wrap: wrap;
+  }
+  
+  .form-options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+/* 动画效果 */
+.environment-item,
+.variable-item {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 焦点状态 */
+button:focus,
+input:focus,
+select:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}

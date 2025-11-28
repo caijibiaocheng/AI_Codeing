@@ -304,6 +304,33 @@ declare global {
       extensionGetLanguages: (extensionId: string) => Promise<{ success: boolean; data?: any[]; error?: string }>;
       extensionGetGrammars: (extensionId: string) => Promise<{ success: boolean; data?: any[]; error?: string }>;
       onExtensionNotification: (callback: (data: any) => void) => () => void;
+
+      // ==================== 项目模板管理 ====================
+      getProjectTemplates: () => Promise<any[]>;
+      createProjectFromTemplate: (projectPath: string, projectName: string, files: any[], dependencies?: Record<string, string>, scripts?: Record<string, string>) => Promise<{ success: boolean; projectPath?: string; error?: string }>;
+      saveProjectTemplate: (template: any) => Promise<{ success: boolean; error?: string }>;
+
+      // ==================== 快捷键管理 ====================
+      getKeyBindings: () => Promise<any[]>;
+      saveKeyBinding: (bindingId: string, keybinding: string) => Promise<{ success: boolean; error?: string }>;
+      resetKeyBinding: (bindingId: string) => Promise<{ success: boolean; error?: string }>;
+      exportKeyBindings: (keybindings: any[]) => Promise<{ success: boolean; canceled?: boolean; error?: string }>;
+      importKeyBindings: () => Promise<boolean>;
+
+      // ==================== 环境变量管理 ====================
+      getEnvironments: () => Promise<any[]>;
+      saveEnvironment: (environment: any) => Promise<{ success: boolean; error?: string }>;
+      addEnvironmentVariable: (environmentId: string, variable: any) => Promise<{ success: boolean; error?: string }>;
+      updateEnvironmentVariable: (environmentId: string, variableId: string, updates: any) => Promise<{ success: boolean; error?: string }>;
+      deleteEnvironmentVariable: (environmentId: string, variableId: string) => Promise<{ success: boolean; error?: string }>;
+      switchEnvironment: (environmentId: string) => Promise<{ success: boolean; error?: string }>;
+      exportEnvironment: (environmentId: string) => Promise<{ success: boolean; canceled?: boolean; error?: string }>;
+      importEnvironment: () => Promise<boolean>;
+
+      // ==================== 对话框操作 ====================
+      showOpenDialog: (options?: any) => Promise<{ canceled: boolean; filePaths?: string[] }>;
+      showSaveDialog: (options?: any) => Promise<{ canceled: boolean; filePath?: string }>;
+
       // Recent Files
       getRecentFiles?: () => Promise<RecentFile[]>;
       addRecentFile?: (filePath: string) => Promise<void>;

@@ -8,3 +8,6 @@ export { registerWorkspaceHandlers } from './workspaceHandlers';
 export { registerExtensionHandlers } from './extensionHandlers';
 export { registerProjectManagementHandlers } from './projectManagementHandlers';
 export { registerAIAssistantHandlers } from './aiAssistantHandlers';
+export { setupProjectTemplatesHandlers } from './projectTemplatesHandlers';
+export { setupKeyBindingsHandlers } from './keyBindingsHandlers';
+export { setupEnvironmentHandlers } from './environmentHandlers';
