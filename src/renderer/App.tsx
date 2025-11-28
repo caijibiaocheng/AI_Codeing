@@ -40,6 +40,9 @@ import ProjectTemplatesPanel from './components/ProjectTemplatesPanel';
 import KeyBindingsManager from './components/KeyBindingsManager';
 import EnvironmentManager from './components/EnvironmentManager';
 import TaskQueuePanel from './components/TaskQueuePanel';
+import SymbolNavigationPanel from './components/SymbolNavigationPanel';
+import RefactoringTools from './components/RefactoringTools';
+import AdvancedSearchReplace from './components/AdvancedSearchReplace';
 
 // Context & Hooks
 import { AppProvider, useApp, usePanels, useEditorSettings, useCurrentFolder, TaskQueueProvider, useTaskQueue } from './contexts';
@@ -66,6 +69,9 @@ import './components/ProjectTemplatesPanel.css';
 import './components/KeyBindingsManager.css';
 import './components/EnvironmentManager.css';
 import './components/TaskQueuePanel.css';
+import './components/SymbolNavigationPanel.css';
+import './components/RefactoringTools.css';
+import './components/AdvancedSearchReplace.css';
 
 // ==================== 主应用内容 ====================
 const AppContent: React.FC = () => {
@@ -376,6 +382,18 @@ const AppContent: React.FC = () => {
         e.preventDefault();
         togglePanel('isTaskQueuePanelOpen');
       }
+      if (e.ctrlKey && e.shiftKey && e.key === 'H') {
+        e.preventDefault();
+        togglePanel('isSymbolNavigationOpen');
+      }
+      if (e.ctrlKey && e.altKey && e.key === 'r') {
+        e.preventDefault();
+        togglePanel('isRefactoringToolsOpen');
+      }
+      if (e.ctrlKey && e.shiftKey && e.key === '\\') {
+        e.preventDefault();
+        togglePanel('isAdvancedSearchReplaceOpen');
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -431,6 +449,12 @@ const AppContent: React.FC = () => {
         isProblemsOpen={panels.isProblemsPanelOpen}
         onToggleTaskQueue={() => togglePanel('isTaskQueuePanelOpen')}
         isTaskQueueOpen={panels.isTaskQueuePanelOpen}
+        onToggleSymbolNavigation={() => togglePanel('isSymbolNavigationOpen')}
+        isSymbolNavigationOpen={panels.isSymbolNavigationOpen}
+        onToggleRefactoringTools={() => togglePanel('isRefactoringToolsOpen')}
+        isRefactoringToolsOpen={panels.isRefactoringToolsOpen}
+        onToggleAdvancedSearch={() => togglePanel('isAdvancedSearchReplaceOpen')}
+        isAdvancedSearchReplaceOpen={panels.isAdvancedSearchReplaceOpen}
       />
 
       {/* 文件浏览器 */}
@@ -661,6 +685,31 @@ const AppContent: React.FC = () => {
       {panels.isTaskQueuePanelOpen && (
         <TaskQueuePanel
           onClose={() => setPanel('isTaskQueuePanelOpen', false)}
+        />
+      )}
+
+      {/* 符号导航面板 */}
+      {panels.isSymbolNavigationOpen && (
+        <SymbolNavigationPanel
+          onClose={() => setPanel('isSymbolNavigationOpen', false)}
+          currentFile={activeTab?.filePath}
+          editorContent={fileContent}
+        />
+      )}
+
+      {/* 代码重构工具面板 */}
+      {panels.isRefactoringToolsOpen && (
+        <RefactoringTools
+          onClose={() => setPanel('isRefactoringToolsOpen', false)}
+          editorContent={fileContent}
+        />
+      )}
+
+      {/* 高级搜索和替换面板 */}
+      {panels.isAdvancedSearchReplaceOpen && (
+        <AdvancedSearchReplace
+          onClose={() => setPanel('isAdvancedSearchReplaceOpen', false)}
+          editorContent={fileContent}
         />
       )}
 

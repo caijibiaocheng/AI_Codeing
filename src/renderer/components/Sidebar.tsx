@@ -36,6 +36,12 @@ interface SidebarProps {
   isProblemsOpen?: boolean;
   onToggleTaskQueue?: () => void;
   isTaskQueueOpen?: boolean;
+  onToggleSymbolNavigation?: () => void;
+  isSymbolNavigationOpen?: boolean;
+  onToggleRefactoringTools?: () => void;
+  isRefactoringToolsOpen?: boolean;
+  onToggleAdvancedSearch?: () => void;
+  isAdvancedSearchReplaceOpen?: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ 
@@ -73,7 +79,13 @@ const Sidebar: React.FC<SidebarProps> = ({
   onToggleProblems,
   isProblemsOpen = false,
   onToggleTaskQueue,
-  isTaskQueueOpen = false
+  isTaskQueueOpen = false,
+  onToggleSymbolNavigation,
+  isSymbolNavigationOpen = false,
+  onToggleRefactoringTools,
+  isRefactoringToolsOpen = false,
+  onToggleAdvancedSearch,
+  isAdvancedSearchReplaceOpen = false
 }) => {
   return (
     <div className="sidebar">
@@ -242,6 +254,36 @@ const Sidebar: React.FC<SidebarProps> = ({
           title="Task Queue (Ctrl+Shift+Q)"
         >
           📋
+        </div>
+      )}
+      
+      {onToggleSymbolNavigation && (
+        <div 
+          className={`sidebar-icon ${isSymbolNavigationOpen ? 'active' : ''}`}
+          onClick={onToggleSymbolNavigation}
+          title="Symbol Navigation (Ctrl+Shift+H)"
+        >
+          🔍
+        </div>
+      )}
+      
+      {onToggleRefactoringTools && (
+        <div 
+          className={`sidebar-icon ${isRefactoringToolsOpen ? 'active' : ''}`}
+          onClick={onToggleRefactoringTools}
+          title="Refactoring Tools (Ctrl+Alt+R)"
+        >
+          🔧
+        </div>
+      )}
+      
+      {onToggleAdvancedSearch && (
+        <div 
+          className={`sidebar-icon ${isAdvancedSearchReplaceOpen ? 'active' : ''}`}
+          onClick={onToggleAdvancedSearch}
+          title="Advanced Search (Ctrl+Shift+\)"
+        >
+          🔎
         </div>
       )}
       
