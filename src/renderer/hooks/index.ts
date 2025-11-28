@@ -3,3 +3,4 @@
  */
 export * from './useTranslation';
 export * from './useTabs';
+export * from './useTaskQueueAutoToggle';

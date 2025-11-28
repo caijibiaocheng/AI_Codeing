@@ -34,6 +34,8 @@ interface SidebarProps {
   isOutlineOpen?: boolean;
   onToggleProblems?: () => void;
   isProblemsOpen?: boolean;
+  onToggleTaskQueue?: () => void;
+  isTaskQueueOpen?: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ 
@@ -69,7 +71,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   onToggleOutline,
   isOutlineOpen = false,
   onToggleProblems,
-  isProblemsOpen = false
+  isProblemsOpen = false,
+  onToggleTaskQueue,
+  isTaskQueueOpen = false
 }) => {
   return (
     <div className="sidebar">
@@ -228,6 +232,16 @@ const Sidebar: React.FC<SidebarProps> = ({
           title="Problems (Ctrl+Shift+D)"
         >
           🐛
+        </div>
+      )}
+      
+      {onToggleTaskQueue && (
+        <div 
+          className={`sidebar-icon ${isTaskQueueOpen ? 'active' : ''}`}
+          onClick={onToggleTaskQueue}
+          title="Task Queue (Ctrl+Shift+Q)"
+        >
+          📋
         </div>
       )}
       
