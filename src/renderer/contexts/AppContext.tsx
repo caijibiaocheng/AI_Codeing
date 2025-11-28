@@ -39,6 +39,7 @@ export interface PanelState {
   isProjectTemplatesPanelOpen: boolean;
   isKeyBindingsManagerOpen: boolean;
   isEnvironmentManagerOpen: boolean;
+  isTaskQueuePanelOpen: boolean;
 }
 
 // Context 值类型
@@ -95,6 +96,7 @@ const defaultPanelState: PanelState = {
   isProjectTemplatesPanelOpen: false,
   isKeyBindingsManagerOpen: false,
   isEnvironmentManagerOpen: false,
+  isTaskQueuePanelOpen: false,
 };
 
 // 创建 Context

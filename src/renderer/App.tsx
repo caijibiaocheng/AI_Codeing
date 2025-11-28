@@ -39,9 +39,10 @@ import ProblemsPanel from './components/ProblemsPanel';
 import ProjectTemplatesPanel from './components/ProjectTemplatesPanel';
 import KeyBindingsManager from './components/KeyBindingsManager';
 import EnvironmentManager from './components/EnvironmentManager';
+import TaskQueuePanel from './components/TaskQueuePanel';
 
 // Context & Hooks
-import { AppProvider, useApp, usePanels, useEditorSettings, useCurrentFolder } from './contexts';
+import { AppProvider, useApp, usePanels, useEditorSettings, useCurrentFolder, TaskQueueProvider, useTaskQueue } from './contexts';
 import { useTabs } from './hooks';
 
 // Utils & i18n
@@ -64,6 +65,7 @@ import './components/ProblemsPanel.css';
 import './components/ProjectTemplatesPanel.css';
 import './components/KeyBindingsManager.css';
 import './components/EnvironmentManager.css';
+import './components/TaskQueuePanel.css';
 
 // ==================== 主应用内容 ====================
 const AppContent: React.FC = () => {
@@ -370,6 +372,10 @@ const AppContent: React.FC = () => {
         e.preventDefault();
         togglePanel('isEnvironmentManagerOpen');
       }
+      if (e.ctrlKey && e.shiftKey && e.key === 'Q') {
+        e.preventDefault();
+        togglePanel('isTaskQueuePanelOpen');
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -423,6 +429,8 @@ const AppContent: React.FC = () => {
         isOutlineOpen={panels.isOutlinePanelOpen}
         onToggleProblems={() => togglePanel('isProblemsPanelOpen')}
         isProblemsOpen={panels.isProblemsPanelOpen}
+        onToggleTaskQueue={() => togglePanel('isTaskQueuePanelOpen')}
+        isTaskQueueOpen={panels.isTaskQueuePanelOpen}
       />
 
       {/* 文件浏览器 */}
@@ -649,6 +657,13 @@ const AppContent: React.FC = () => {
         />
       )}
 
+      {/* 任务队列面板 */}
+      {panels.isTaskQueuePanelOpen && (
+        <TaskQueuePanel
+          onClose={() => setPanel('isTaskQueuePanelOpen', false)}
+        />
+      )}
+
       {/* 设置模态框 */}
       {panels.isSettingsOpen && (
         <SettingsModal
@@ -848,7 +863,9 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <AppProvider>
-      <AppContent />
+      <TaskQueueProvider>
+        <AppContent />
+      </TaskQueueProvider>
     </AppProvider>
   );
 };
