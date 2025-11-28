@@ -152,19 +152,48 @@ npm start
 
 ### ⌨️ 快捷键
 
+#### 核心编辑操作
+
 | 功能 | Windows/Linux | macOS |
 |------|---------------|-------|
 | 打开文件 | `Ctrl+O` | `Cmd+O` |
 | 打开文件夹 | `Ctrl+Shift+O` | `Cmd+Shift+O` |
 | 保存文件 | `Ctrl+S` | `Cmd+S` |
 | 快速打开 | `Ctrl+P` | `Cmd+P` |
+| 命令面板 | `Ctrl+Shift+P` | `Cmd+Shift+P` |
 | 全局搜索 | `Ctrl+Shift+F` | `Cmd+Shift+F` |
-| Git 面板 | `Ctrl+Shift+G` | `Cmd+Shift+G` |
-| AI Composer | `Ctrl+Shift+C` | `Cmd+Shift+C` |
-| 切换终端 | `Ctrl+`` | `Cmd+`` |
-| 代码片段 | `Ctrl+Shift+P` | `Cmd+Shift+P` |
-| 书签面板 | `Ctrl+Shift+B` | `Cmd+Shift+B` |
-| 代码度量 | `Ctrl+Shift+M` | `Cmd+Shift+M` |
+| 最近文件（弹窗） | `Ctrl+R` | `Cmd+R` |
+| 打开终端 | ``Ctrl+` `` | ``Cmd+` `` |
+| 格式化代码 | `Shift+Alt+F` | `Shift+Option+F` |
+
+#### 面板与工具
+
+| 功能 | Windows/Linux | macOS | 说明 |
+|------|---------------|-------|------|
+| AI Composer | `Ctrl+Shift+C` | `Cmd+Shift+C` | 多文件批量 AI 编辑 |
+| Git 面板 | `Ctrl+Shift+G` | `Cmd+Shift+G` | 查看 Git 变更、提交 |
+| 扩展管理 | `Ctrl+Shift+X` | `Cmd+Shift+X` | 管理扩展与插件 |
+| AI 助手面板 | `Ctrl+Shift+A` | `Cmd+Shift+A` | 打开 AI 聊天面板 |
+| Markdown 预览 | `Ctrl+Shift+V` | `Cmd+Shift+V` | Markdown 双栏预览 |
+| TODO 面板 | `Ctrl+Shift+T` | `Cmd+Shift+T` | 管理工作区 TODO |
+| Git Stash 面板 | `Ctrl+Shift+S` | `Cmd+Shift+S` | 保存/应用 Git Stash |
+| 开发者工具集 | `Ctrl+Shift+U` | `Cmd+Shift+U` | HTTP 客户端、正则等工具 |
+| 代码片段面板 | `Ctrl+Shift+I` | `Cmd+Shift+I` | 管理 Snippets |
+| 书签面板 | `Ctrl+Shift+B` | `Cmd+Shift+B` | 查看/跳转书签 |
+| 代码度量 | `Ctrl+Shift+M` | `Cmd+Shift+M` | 查看代码统计 |
+| 最近文件面板 | `Ctrl+Shift+R` | `Cmd+Shift+R` | 固定在侧边的最近文件 |
+| 文件大纲（Outline） | `Ctrl+Shift+O` | `Cmd+Shift+O` | 显示当前文件结构 |
+| 问题 (Problems) 面板 | `Ctrl+Shift+D` | `Cmd+Shift+D` | 查看诊断/错误 |
+| 项目模板面板 | `Ctrl+Shift+N` | `Cmd+Shift+N` | 打开模板中心 |
+| 快捷键管理器 | `Ctrl+Shift+K` | `Cmd+Shift+K` | 配置自定义快捷键 |
+| 环境变量管理器 | `Ctrl+Shift+E` | `Cmd+Shift+E` | 管理多套环境变量 |
+| 任务队列面板 | `Ctrl+Shift+Q` | `Cmd+Shift+Q` | 查看 AI/任务队列 |
+| 符号导航面板 | `Ctrl+Shift+H` | `Cmd+Shift+H` | 快速跳转定义/引用 |
+| 重构工具面板 | `Ctrl+Alt+R` | `Cmd+Option+R` | 八大重构操作入口 |
+| 高级搜索与替换 | `Ctrl+Shift+\\` | `Cmd+Shift+\\` | 正则搜索/批量替换 |
+
+> 💡 提示：macOS 上请将 `Ctrl` 替换为 `Cmd`，`Alt` 替换为 `Option`。查看完整快捷键说明可参考 [docs/SHORTCUT_REFERENCE.md](docs/SHORTCUT_REFERENCE.md)。
+
 
 ### 📁 项目结构
 
