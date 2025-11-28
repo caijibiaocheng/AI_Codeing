@@ -271,17 +271,33 @@ if (e.ctrlKey && e.shiftKey && e.key === '\\') {
 
 ## ⌨️ 完整快捷键参考
 
-| 快捷键 | 功能 |
-|--------|------|
-| **Ctrl+Shift+H** | 打开符号导航面板 |
-| **Ctrl+Alt+R** | 打开代码重构工具 |
-| **Ctrl+Shift+\\** | 打开高级搜索和替换 |
-| **Ctrl+Shift+P** | 命令面板 |
-| **Ctrl+Shift+F** | 全局搜索 |
-| **Shift+Alt+F** | 格式化代码 |
-| **Ctrl+Shift+Q** | 任务队列 |
-| **Ctrl+Shift+E** | 环境变量管理 |
-| **Ctrl+Shift+K** | 快捷键管理 |
+### 新增功能入口
+
+| 快捷键 | 功能 | 说明 |
+|--------|------|------|
+| `Ctrl+Shift+H` | 符号导航面板 | 搜索符号、查看定义与引用 |
+| `Ctrl+Alt+R` | 代码重构工具 | 打开 8 项重构操作面板 |
+| `Ctrl+Shift+\\` | 高级搜索与替换 | 启用正则、历史与批量替换 |
+| `Ctrl+Shift+C` | AI Composer | 批量生成或修改多文件 |
+| `Ctrl+Shift+Q` | 任务队列面板 | 跟踪 AI 指令执行情况 |
+| `Ctrl+Shift+E` | 环境变量管理器 | 管理 Dev/Test/Prod 等环境 |
+| `Ctrl+Shift+K` | 快捷键管理器 | 自定义、导入或导出键位 |
+| `Ctrl+Shift+N` | 项目模板面板 | 新建项目模板或自定义模板 |
+
+### 常用辅助快捷键
+
+| 快捷键 | 功能 | 说明 |
+|--------|------|------|
+| `Ctrl+Shift+F` | 全局搜索 | 项目范围文本搜索 |
+| `Ctrl+Shift+G` | Git 面板 | 查看变更、提交、刷新 |
+| `Ctrl+Shift+O` | 文件大纲 | 展示当前文件结构 |
+| `Ctrl+Shift+V` | Markdown 预览 | Markdown 双栏预览 |
+| `Ctrl+Shift+B` | 书签面板 | 管理快速跳转书签 |
+| ``Ctrl+` `` | 内置终端 | 打开/关闭内置终端 |
+| `Shift+Alt+F` | 格式化代码 | 调用内置 Formatter |
+
+> 更完整的键位列表及 macOS 对照表请参考 [docs/SHORTCUT_REFERENCE.md](docs/SHORTCUT_REFERENCE.md)。
+
 
 ---
 
