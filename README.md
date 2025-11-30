@@ -73,6 +73,21 @@ AI Code Editor 是一款基于 Electron 构建的现代化智能代码编辑器�
 - **命令执行**：直接在编辑器中运行命令
 - **多终端支持**：可同时打开多个终端实例
 
+#### 🚀 高级编码助手 (Cursor 功能)
+- **符号导航**：快速搜索和导航代码中的符号
+  - 实时符号搜索，支持跳转到定义和查找引用
+  - 导航历史跟踪，支持批量重命名
+  - 快捷键：`Ctrl+Shift+H`
+- **代码重构工具**：专业的代码重构和优化
+  - 8 种重构操作：重命名、提取函数/常量/变量、排序导入、删除无用代码、函数转换、类型注解
+  - 实时反馈，显示预期更改数量
+  - 快捷键：`Ctrl+Alt+R`
+- **高级搜索与替换**：强大的搜索和替换功能
+  - 正则表达式支持，区分大小写，全词匹配
+  - 搜索历史，支持逐个或批量替换
+  - 替换预览，显示替换前后对比和统计信息
+  - 快捷键：`Ctrl+Shift+\`
+
 ### 🛠️ 技术栈
 
 | 类别 | 技术 |
@@ -149,6 +164,9 @@ npm start
 - **快速打开**: `Ctrl+P` 快速搜索并打开文件
 - **全局搜索**: `Ctrl+Shift+F` 在项目中搜索内容
 - **Git 面板**: `Ctrl+Shift+G` 打开版本控制
+- **符号导航**: `Ctrl+Shift+H` 快速搜索和导航代码符号
+- **代码重构**: `Ctrl+Alt+R` 开启代码重构工具
+- **高级搜索**: `Ctrl+Shift+\` 使用正则表达式搜索和替换
 
 ### ⌨️ 快捷键
 
@@ -159,6 +177,9 @@ npm start
 | 保存文件 | `Ctrl+S` | `Cmd+S` |
 | 快速打开 | `Ctrl+P` | `Cmd+P` |
 | 全局搜索 | `Ctrl+Shift+F` | `Cmd+Shift+F` |
+| 符号导航 | `Ctrl+Shift+H` | `Cmd+Shift+H` |
+| 代码重构 | `Ctrl+Alt+R` | `Cmd+Alt+R` |
+| 高级搜索替换 | `Ctrl+Shift+\` | `Cmd+Shift+\` |
 | Git 面板 | `Ctrl+Shift+G` | `Cmd+Shift+G` |
 | AI Composer | `Ctrl+Shift+C` | `Cmd+Shift+C` |
 | 切换终端 | `Ctrl+`` | `Cmd+`` |
@@ -197,6 +218,9 @@ ai-code-editor/
 │   │   │   ├── Terminal.tsx         # 终端
 │   │   │   ├── GitPanel.tsx         # Git 面板
 │   │   │   ├── AIComposer.tsx       # AI Composer
+│   │   │   ├── SymbolNavigationPanel.tsx  # 符号导航 (Cursor 功能)
+│   │   │   ├── RefactoringTools.tsx       # 代码重构 (Cursor 功能)
+│   │   │   ├── AdvancedSearchReplace.tsx  # 高级搜索替换 (Cursor 功能)
 │   │   │   └── ...                  # 更多组件
 │   │   ├── contexts/            # React Context
 │   │   ├── hooks/               # 自定义 Hooks
@@ -353,9 +377,11 @@ chore: 构建/工具相关
 - [x] 代码片段管理 ✅
 - [x] 书签功能 ✅
 - [x] 代码度量分析 ✅
+- [x] 符号导航 ✅
+- [x] 代码重构工具 ✅
+- [x] 高级搜索与替换 ✅
 - [ ] 主题市场
 - [ ] 性能优化
-- [ ] 代码重构工具
 - [ ] 项目模板系统
 
 ### ❓ 常见问题
@@ -438,6 +464,21 @@ AI Code Editor is a modern intelligent code editor built on Electron, inspired b
 #### 🌍 Internationalization
 - **Multi-language UI**: Simplified Chinese, English
 - **Dynamic Switching**: Switch languages without restart
+
+#### 🚀 Advanced Coding Assistant (Cursor Features)
+- **Symbol Navigation**: Quick search and navigate symbols in code
+  - Real-time symbol search with jump to definition and find references
+  - Navigation history tracking with bulk rename support
+  - Shortcut: `Ctrl+Shift+H`
+- **Refactoring Tools**: Professional code refactoring and optimization
+  - 8 refactoring operations: rename, extract function/constant/variable, sort imports, remove unused code, function conversion, type annotations
+  - Real-time feedback showing expected change count
+  - Shortcut: `Ctrl+Alt+R`
+- **Advanced Search & Replace**: Powerful search and replace functionality
+  - Regular expression support with case sensitivity and whole word matching
+  - Search history with replace one-by-one or batch replace
+  - Replace preview showing before/after comparison and statistics
+  - Shortcut: `Ctrl+Shift+\`
 
 ### 🚀 Quick Start
 
